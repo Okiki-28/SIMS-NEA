@@ -2,6 +2,8 @@ import { Button } from "../components/Button";
 import { ButtonType } from "../components/Button";
 import { Link } from "react-router-dom";
 
+
+// Stay open
 export const RegisterNew = () => {
     return (
         <main>

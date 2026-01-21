@@ -13,7 +13,7 @@ function App() {
     <Router>
         <Routes>
           {/* Runs through the Main Layout format */}
-          <Route path='/home' element={<MainLayout><Home /></MainLayout>}/>
+          <Route path='/' element={<MainLayout><Home /></MainLayout>}/>
 
           {/* Does not Run through the main layout format */}
           <Route path='/register' element={<Register />}/>
