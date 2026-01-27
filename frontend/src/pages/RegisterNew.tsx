@@ -36,8 +36,12 @@ export const RegisterNew = () => {
                     <fieldset>
                         <legend>User Details</legend>
                         <div>
-                            <label htmlFor="user_fullname">Full Name: </label>
-                            <input type="text" id="user_fullname" placeholder="Lastname Firstname"/>
+                            <label htmlFor="user_first_name">Full Name: </label>
+                            <input type="text" id="user_first_name" placeholder="John"/>
+                        </div>
+                        <div>
+                            <label htmlFor="user_last_name">Full Name: </label>
+                            <input type="text" id="user_last_name" placeholder="Doe"/>
                         </div>
                         <div>
                             <label htmlFor="user_role">Role: </label>

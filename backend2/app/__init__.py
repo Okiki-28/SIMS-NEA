@@ -6,7 +6,7 @@ from flask_cors import CORS
 db = SQLAlchemy()
 migrate = Migrate()
 
-def create_App():
+def create_app():
 
     app = Flask(__name__)
 
@@ -25,9 +25,9 @@ def create_App():
     def handle_http_exception(e):
         return fail(error=e.name, status=e.code, details=e.description)
 
-    @app.errorhandler(Exception)
-    def handle_any_exception(e):
-        return fail(error="Internal server Error", status=500)
+    # @app.errorhandler(Exception)
+    # def handle_any_exception(e):
+    #     return fail(error="Internal server Error", status=500)
 
     from app.routes import register_routes
     register_routes(app)
