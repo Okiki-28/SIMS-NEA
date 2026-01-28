@@ -10,11 +10,11 @@ export const Login = () => {
                     <p>Login to your account</p>
                 </div>
                 <form action="">
-                    <label htmlFor="login-email">Email: </label>
-                    <input type="text" id="login-email" placeholder="johndoe@company.com"/>
+                    <label htmlFor="email">Email: </label>
+                    <input type="text" id="email" placeholder="johndoe@company.com"/>
 
-                    <label htmlFor="login-password">Password: </label>
-                    <input type="password" name="login-password" id="login-password" />
+                    <label htmlFor="password">Password: </label>
+                    <input type="password" name="password" id="login-password" />
 
                     <Button>Submit</Button>
                 </form>

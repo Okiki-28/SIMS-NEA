@@ -9,7 +9,7 @@ class Company(db.Model):
         primary_key=True
     )
     reg_no = db.Column(
-        db.Integer,
+        db.String(10),
         nullable=False,
         unique=True
     )
@@ -21,12 +21,12 @@ class Company(db.Model):
         db.String(150),
     )
     phone = db.Column(
-        db.Integer
+        db.String(20)
     )
     tax_id = db.Column(
-        db.Integer
+        db.String(20)
     )
     size = db.Column(
         db.Integer,
-        auto_increment=True
+        autoincrement=True
     )

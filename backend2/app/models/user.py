@@ -37,7 +37,7 @@ class User(db.Model):
         nullable = False
     )
     role = db.Column(
-        db.String("20"),
+        db.String(20),
         default = "Admin",
         nullable = False
     )

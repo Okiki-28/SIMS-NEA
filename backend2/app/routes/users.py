@@ -1,23 +1,27 @@
 from app import db
-from app.models.company import Company
+from app.models.user import User
 from flask import Blueprint, jsonify
 
 user_bp = Blueprint("user", __name__, url_prefix="/api/users")
 
 @user_bp.route("", methods=["GET"])
 def get_companies():
-    companies = Company.query.all()
+    users = User.query.all()
 
     data = [
         {
-            "id": c.id,
-            "reg_no": c.reg_no,
-            "name": c.name,
-            "address": c.address,
-            "phone": c.phone,
-            "tax_id": c.tax_id
+            "id": u.id,
+            "first name": u.first_name,
+            "last name": u.last_name,
+            "email": u.email,
+            "tel": u.tel,
+            "role": u.role,
+            "created at": u.created_at,
+            "security question": u.security_question,
+            "security response": u.security_response,
+            "company reg no": u.company_reg_no
         }
-        for c in companies
+        for u in users
     ]
 
     return jsonify({
