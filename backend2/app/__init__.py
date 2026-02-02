@@ -3,6 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 
+import os 
+from dotenv import load_dotenv, find_dotenv
+
 db = SQLAlchemy()
 migrate = Migrate()
 
@@ -14,9 +17,21 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = "dev-only-change-me"
 
+    app.config.update(
+        SESSION_COOKIE_SAMESITE="Lax",   # often OK for localhost dev
+        SESSION_COOKIE_SECURE=False      # must be False on HTTP
+    )
+
+    dotenv_path = find_dotenv()
+    load_dotenv(dotenv_path)
+
+    app.config["secret_key"] = os.getenv("SECRET_KEY") or "dev-only-change-me"
+
     db.init_app(app)
     migrate.init_app(app, db)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, 
+         resources={r"/api/*": {"origins": "*"}},
+         supports_credentials=True)
 
     from werkzeug.exceptions import HTTPException
     from app.utils.fail import fail

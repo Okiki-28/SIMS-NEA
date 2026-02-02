@@ -7,6 +7,7 @@ import { Register } from './pages/RegisterPage';
 import { Home } from './pages/Homepage';
 import { RegisterNew } from './pages/RegisterNew';
 import { RegisterExisting } from './pages/RegistserExisting';
+import { Dashboard } from './pages/Dashboard';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path='/register-new' element={<RegisterNew />}/>
           <Route path='/register-existing' element={<RegisterExisting />}/>
           <Route path='/login' element={<Login />}/> 
+          <Route path='/dashboard' element={<Dashboard/>}/>
           <Route path='*' element={<h1>Page not found !!</h1>}/>
         </Routes>
     </Router>

@@ -1,6 +1,6 @@
 from app import db
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from app.models.user import User
 from app.models.company import Company
 from app.models.enum import UserRole, SecurityQuestion
@@ -23,7 +23,7 @@ def hello():
 
 @auth_bp.route("/register-new", methods=["POST"])
 def register_new():
-    data = request.get_json()
+    data = request.get_json() or {}
 
     company_name = data.get("company_name")
     company_address = data.get("company_address")
@@ -68,7 +68,7 @@ def register_new():
     user = User(
         first_name = user_first_name,
         last_name = user_last_name,
-        email = user_email,
+        email = user_email.lower(),
         tel = user_tel,
         password_hash = password_hash,
         salt_hex = salt_hex,
@@ -81,12 +81,15 @@ def register_new():
     db.session.add(user)
     db.session.commit()
 
+    session['user_id'] = user.id
+    session['first_name'] = user.first_name
+
     return ok(data=user.id)
 
 
 @auth_bp.route("/register-existing", methods=["POST"])
 def register_existing():
-    data = request.get_json()
+    data = request.get_json() or {}
 
     company_reg_no = data.get("company_reg_no")
     user_first_name = data.get("user_first_name")
@@ -97,7 +100,7 @@ def register_existing():
     user_password = data.get("user_password")
     user_confirm_password = data.get("user_confirm_password")
 
-    security_question = SecurityQuestion.motherMaiden.value,
+    security_question = data.get("security_question")
     security_response = data.get("security_response")
 
     if not all([company_reg_no, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response]):
@@ -117,18 +120,22 @@ def register_existing():
     user = User(
         first_name = user_first_name,
         last_name = user_last_name,
-        email = user_email,
+        email = user_email.lower(),
         tel = user_tel,
         password_hash = password_hash,
         salt_hex = salt_hex,
         role = user_role,
         company_reg_no = company_reg_no,
-        security_question = SecurityQuestion.motherMaiden.value,
+        security_question = security_question,
         security_response = security_response
     )
 
     # db.session.add(user)
     # db.session.commit()
+
+    session['user_id'] = user.id
+    session['first_name'] = user.first_name
+
     import traceback
     from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
@@ -155,7 +162,7 @@ def register_existing():
 def login():
     data = request.get_json() or {}
 
-    email = data.get("email")
+    email = data.get("email").lower()
     password = data.get("password")
 
     if not email or not password:
@@ -171,4 +178,23 @@ def login():
     if not hmac.compare_digest(calculated_hash, user.password_hash):
         return fail(details="Invalid email or password")
     
-    return ok(data=f"Welcome back {user.first_name}")
+    session.clear()
+    session['user_id'] = user.id
+    session['first_name'] = user.first_name
+    
+    return ok(data=f"Welcome back {session["first_name"]}")
+
+@auth_bp.route("/status", methods=["GET"])
+def status():
+    return {
+        "loggedIn": 'user_id' in session
+    }
+
+@auth_bp.route("/logout", methods=["post"])
+def logout():
+    if 'user_id' in session:
+        session.clear()
+
+    return {
+        "loggedIn": 'user_id' in session
+    }

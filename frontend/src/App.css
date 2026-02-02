@@ -56,6 +56,10 @@ section.standalone {
     box-shadow: 0px 0px 5px 1px black;
 }
 
+section.standalone.login  input {
+    width: 250px;
+}
+
 section.standalone .greeting {
     display: flex;
     flex-direction: column;
@@ -106,6 +110,10 @@ section.standalone.register  {
     align-items: flex-start;
     justify-content: flex-start;
     font-size: 16px;
+}
+
+section.standalone.register.existing .solid {
+    align-self: center;
 }
 
 section.standalone.register.new {
