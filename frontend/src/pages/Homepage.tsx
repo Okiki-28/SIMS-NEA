@@ -1,24 +1,33 @@
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { login } from "../store/authstore";
+import { useDispatch } from "react-redux";
 
 export const Home = () => {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     useEffect(() => {
 
         const fetchStatus = async () => {
-            try {
-                const response = await axios.get("http://127.0.0.1:5000/api/auth/status", { withCredentials: true })
-                console.log("here")
-                alert(response.data === true)
-                if (response.data === true) {
-                    navigate("/dashboard")
-                } else {
-                    navigate("/register")
-                }
-            } catch {
-                console.log("Error")
-            }
+            dispatch(login({
+                user_id: 1, 
+                username: "Samuel"}))
+                navigate("/dashboard")
+            // try {
+            //     const response = await axios.get("http://127.0.0.1:5000/api/auth/status", { withCredentials: true })
+            //     console.log(response.data)
+            //     if (response.data.loggedIn === true) {
+            //         navigate("/dashboard")
+            //         dispatch(login({
+            //             user_id: response.data.user_id, 
+            //             username: response.data.first_name}))
+            //     } else {
+            //         navigate("/register")
+            //     }
+            // } catch {
+            //     console.log("Error")
+            // }
         }
         fetchStatus()
     }, [])

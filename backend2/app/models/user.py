@@ -58,3 +58,5 @@ class User(db.Model):
         db.String(255),
         nullable = False
     )
+
+    company = db.relationship("Company", backref="users")

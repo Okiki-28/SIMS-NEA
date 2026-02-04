@@ -142,3 +142,143 @@ section.standalone.register form button {
     width: fit-content;
     padding: 10px 30px;
 }
+
+/* ----------Dashboard */
+main.main-layout {
+    position: relative;
+    align-items: flex-start;
+    background-color: #fbfaf8;
+    padding-top: 120px;
+    padding-left: 20%;
+}
+
+main .left-bar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 30px;
+    width: 17%;
+    display: flex;
+    justify-content: center;
+    font-size: 22px;
+    background-color: #5fb49c;
+    border-bottom-right-radius: 30px;
+}
+
+main .left-bar ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+main .left-bar ul li.active {
+    color: #fbfaf8;
+    font-weight: 1000;
+    text-decoration: underline;
+}
+
+main .top-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 83%;
+    padding: 20px;
+}
+
+main .top-bar .greeting h1 {
+    font-size: 40px;
+}
+
+main .overview {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-top: 20px;
+}
+
+main .overview div {
+    background-color: #5fb49c;
+    width: 150px;
+    height: 160px;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+main .overview div h2 {
+    font-weight: 100;
+    font-size: 15px;
+    text-align: left;
+}
+
+main .overview div .number {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+main.inventory {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+main .inventory-options {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    background-color: #40476d;
+    border-radius: 10px;
+    color: #fbfaf8;
+    padding: 40px;
+    margin-left: 70px;
+}
+
+main .inventory-options input,
+main .inventory-options select,
+main .inventory-options select option {
+    width: 250px;
+    font-size: 14px;
+    padding: 7px;
+    border-radius: 7px;
+    border: 0px;
+    text-align: center;
+    outline: none;
+}
+
+main .inventory-options input {
+    width: 300px;
+    text-align: left;
+}
+
+main .product-grid {
+    margin-top: 50px;
+    background-color: #40476d;
+    margin-left: 100px;
+}
+
+main .product-grid table {
+    border-collapse: collapse;
+    color: #fbfaf8;
+}
+
+main .product-grid td,
+main .product-grid th {
+    padding: 20px;
+    text-align: left;
+    border-right: 1px solid #fbfaf8;
+    
+}
+main .product-grid th {
+    border-bottom: 1px solid #fbfaf8;
+}
+
+main .left-bar .top-bar .overview .number .inventory-options .product-grid {
+    font: optional;
+}

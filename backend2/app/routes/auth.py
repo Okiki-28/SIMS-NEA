@@ -187,7 +187,9 @@ def login():
 @auth_bp.route("/status", methods=["GET"])
 def status():
     return {
-        "loggedIn": 'user_id' in session
+        "loggedIn": 'user_id' in session,
+        "user_id": session.get('user_id'),
+        "first_name": session.get('first_name')
     }
 
 @auth_bp.route("/logout", methods=["post"])

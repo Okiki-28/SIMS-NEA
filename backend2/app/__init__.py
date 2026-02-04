@@ -15,7 +15,6 @@ def create_app():
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["SECRET_KEY"] = "dev-only-change-me"
 
     app.config.update(
         SESSION_COOKIE_SAMESITE="Lax",   # often OK for localhost dev
@@ -25,12 +24,12 @@ def create_app():
     dotenv_path = find_dotenv()
     load_dotenv(dotenv_path)
 
-    app.config["secret_key"] = os.getenv("SECRET_KEY") or "dev-only-change-me"
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY") or "dev-only-change-me"
 
     db.init_app(app)
     migrate.init_app(app, db)
     CORS(app, 
-         resources={r"/api/*": {"origins": "*"}},
+         resources={r"/api/*": {"origins": "http://localhost:3000"}},
          supports_credentials=True)
 
     from werkzeug.exceptions import HTTPException

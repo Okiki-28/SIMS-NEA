@@ -1,11 +1,11 @@
 from app import db
 from app.models.user import User
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 
 user_bp = Blueprint("user", __name__, url_prefix="/api/users")
 
 @user_bp.route("", methods=["GET"])
-def get_companies():
+def get_all_users():
     users = User.query.all()
 
     data = [
@@ -28,3 +28,10 @@ def get_companies():
         "success": True,
         "data": data
     })
+
+@user_bp.route("", methods=["POST"])
+def get_user():
+    data = request.get_json()
+    user_id = data.get("user_id")
+
+    user = User.query(User.id == user_id).first()
