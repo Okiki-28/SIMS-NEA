@@ -1,37 +1,48 @@
 import { useSelector } from "react-redux"
 import { Button } from "../components/Button"
+import { useDispatch } from "react-redux"
+import { setHeading } from "../store/authstore"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { error } from "console"
+import { useNavigate } from "react-router-dom"
 
 export const Dashboard = () => {
-    
-    const username = useSelector((state: any)=>state.user.value.username)
+    const [productCount, setProductCount] = useState(0)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    useEffect(() => {
+        dispatch(setHeading({
+            heading: "Dashboard"
+        }));
+    }, [dispatch]);
+    const savedUser = localStorage.getItem('user')
+    let username = ""
+    let company_reg = ""
+    if (savedUser) {
+        username = JSON.parse(savedUser)['username']
+        company_reg = JSON.parse(savedUser)['company_reg']
+    }
+    useEffect(()=> {
+        const getProductCount = async () => {
+            try {
+                const response = await axios.post("http://127.0.0.1:5000/api/products/get-total-count", {"company_reg_no": company_reg})
+                setProductCount(response.data.product_count)
+                return response.data.product_count
+            } catch {
+                console.log("")
+            }
+        }
+        getProductCount()
+    }, [company_reg])
+
 
     return (
         <main className="dashboard main-layout">
-            <section className="left-bar">
-                <ul>
-                    <li className="active">Dashboard</li>
-                    <li>Inventory</li>
-                    <li>Profile</li>
-                    <li>Reports</li>
-                    <li>Settings</li>
-                    <hr />
-                    <li>Logout</li>
-                </ul>
-            </section>
-            <section className="top-bar">
-                <div className="greeting">
-                    <h1>Dashboard</h1>
-                    <p>Welcome back, {username}. Here's your stock overview</p> 
-                </div>
-                <div className="functionality">
-                    <Button>Add Products +</Button>
-                    <Button>Generate Report</Button>
-                </div>
-            </section>
             <section className="overview">
                 <div className="total-products">
                     <h2>Total Products</h2>
-                    <p className="number">219</p>
+                    <p className="number">{productCount}</p>
                     <p className="comment">up 5% from last week</p>
                 </div>
                 <div className="low-stock-alerts">

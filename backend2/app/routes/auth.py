@@ -83,8 +83,16 @@ def register_new():
 
     session['user_id'] = user.id
     session['first_name'] = user.first_name
+    session['company_reg'] = user.company_reg_no
 
-    return ok(data=user.id)
+    data = {
+        'user_id': user.id,
+        'username': user.first_name,
+        'company_reg': user.company_reg_no,
+        'loggedIn': True
+    }
+
+    return data
 
 
 @auth_bp.route("/register-existing", methods=["POST"])
@@ -135,6 +143,16 @@ def register_existing():
 
     session['user_id'] = user.id
     session['first_name'] = user.first_name
+    session['company_reg'] = user.company_reg_no
+
+    data = {
+        'user_id': user.id,
+        'username': user.first_name,
+        'company_reg': user.company_reg_no,
+        'loggedIn': True
+    }
+
+    return data
 
     import traceback
     from sqlalchemy.exc import SQLAlchemyError, IntegrityError
@@ -181,8 +199,15 @@ def login():
     session.clear()
     session['user_id'] = user.id
     session['first_name'] = user.first_name
+
+    data = {
+        'user_id': user.id,
+        'username': user.first_name,
+        'company_reg': user.company_reg_no,
+        'loggedIn': True
+    }
     
-    return ok(data=f"Welcome back {session["first_name"]}")
+    return data
 
 @auth_bp.route("/status", methods=["GET"])
 def status():

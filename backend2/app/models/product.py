@@ -5,7 +5,7 @@ class Product(db.Model):
     __tablename__ = "product"
     id = db.Column(
         db.Integer,
-        autoincrement=True,  # Fixed: lowercase
+        autoincrement=True,
         primary_key=True
     )
     name = db.Column(
@@ -33,11 +33,12 @@ class Product(db.Model):
     )
     supplier_id = db.Column(
         db.Integer,
-        # db.ForeignKey("Supplier.id", ondelete="CASCADE")  # Added FK constraint
+        db.ForeignKey("supplier.id", ondelete="CASCADE"),
+        nullable = True
     )
     category_id = db.Column(
         db.Integer,
-        db.ForeignKey("Category.id", ondelete="CASCADE"),  # Fixed: lowercase table name
+        db.ForeignKey("category.id", ondelete="CASCADE"),
         nullable=False
     )
     company_reg_no = db.Column(
@@ -46,6 +47,7 @@ class Product(db.Model):
         nullable=False
     )
 
-    company = db.relationship("Company", backref="products")
-    category = db.relationship("Category", backref="products")
-    # supplier = db.relationship("Supplier", backref="products")  # Added relationship
+    # Fix: Use capitalized class names, not table names
+    company = db.relationship("Company", foreign_keys=[company_reg_no], backref="products")
+    category = db.relationship("Category", foreign_keys=[category_id], backref="products")
+    supplier = db.relationship("Supplier", foreign_keys=[supplier_id], backref="products")

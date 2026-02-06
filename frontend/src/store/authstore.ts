@@ -3,6 +3,7 @@ import { configureStore, createSlice} from "@reduxjs/toolkit";
 const initialState = {value: {
         user_id: -1,
         username: null,
+        company_reg: "",
         loggedIn: false
     }}
 const userSlice = createSlice({
@@ -10,10 +11,11 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action)=> {
-            const {user_id, username} = action.payload
+            const {user_id, username, company_reg} = action.payload
 
             state.value.user_id = user_id;
             state.value.username = username;
+            state.value.company_reg = company_reg;
             state.value.loggedIn = true;
         },
 
@@ -21,10 +23,23 @@ const userSlice = createSlice({
     }
 })
 
-export const {login, logout} = userSlice.actions
+const headingSlice = createSlice({
+    name: "heading",
+    initialState: {value: {heading: "Homepage"}},
+    reducers: {
+        setHeading: (state, action)=> {
+            const {heading} = action.payload
+            state.value.heading = heading
+        }
+    }
+})
 
-export const authStore = configureStore({
+export const {login, logout} = userSlice.actions
+export const {setHeading} = headingSlice.actions
+
+export const store = configureStore({
     reducer: {
-        user: userSlice.reducer
+        user: userSlice.reducer,
+        heading: headingSlice.reducer
     }
 })

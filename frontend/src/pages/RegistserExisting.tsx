@@ -2,9 +2,11 @@ import { useState } from "react"
 import axios from "axios"
 import { Button } from "../components/Button"
 import { ButtonType } from "../components/Button"
+import { useNavigate } from "react-router-dom"
 
 export const RegisterExisting = () => {
 
+    const navigate = useNavigate()
     const BASE_URL = "http://127.0.0.1:5000/api/auth"
 
     const [formData, setFormData] = useState({
@@ -31,8 +33,10 @@ export const RegisterExisting = () => {
         e.preventDefault();
 
         try {
-            const res = await axios.post(`${BASE_URL}/register-existing`, formData);
-            console.log("OK:", res.data);
+            const response = await axios.post(`${BASE_URL}/register-existing`, formData);
+            const data= response.data
+            console.log("OK:", data);
+            navigate("/login")
         } catch (err: any) {
             console.log("Status:", err?.response?.status);
         }

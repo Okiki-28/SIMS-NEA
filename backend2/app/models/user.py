@@ -5,7 +5,7 @@ from app.models.enum import UserRole, SecurityQuestion
 
 class User(db.Model):
 
-    __tablename__ = "users"
+    __tablename__ = "user"
     
     id = db.Column(
         db.Integer,
@@ -59,4 +59,4 @@ class User(db.Model):
         nullable = False
     )
 
-    company = db.relationship("Company", backref="users")
+    company = db.relationship("Company", foreign_keys=[company_reg_no], backref="users")

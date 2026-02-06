@@ -6,16 +6,22 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-export const Login = () => {
+import { useDispatch } from "react-redux";
+import { login } from "../store/authstore";
 
+export const Login = () => {
+    
     const BASE_URL = "http://127.0.0.1:5000/api/auth"
 
+    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
         email: "",
         password: ""
     })
+    const [error, setError] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleChange = (e: any) => {
         const { name, value } = e.target
@@ -24,20 +30,44 @@ export const Login = () => {
             ...prev,
             [name]: value
         }));
+        
+        // Clear error when user starts typing
+        if (error) setError("")
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError("")
+        setIsLoading(true)
 
         try {
-            const res = await axios.post(`${BASE_URL}/login`, formData, { withCredentials: true });
-            console.log("OK:", res.data);
-            navigate("/")
+            const response = await axios.post(`${BASE_URL}/login`, formData, { withCredentials: true });
+            const data = response.data
+            localStorage.setItem('user', JSON.stringify(data))
+            console.log("Login successful:", data );
+            
+            dispatch(login({
+                user_id: data.user_id, 
+                username: data.username,
+                company_reg: data.company_reg
+            }))
+            
+            navigate("/dashboard")
             
         } catch (err: any) {
-            console.log("Status:", err?.response?.status);
-            console.log("Backend:", err?.response?.data);
+            console.log("Login error:", err?.response?.status);
+            console.log("Error details:", err?.response?.data);
             
+            // Set user-friendly error message
+            if (err?.response?.status === 401) {
+                setError("Invalid email or password")
+            } else if (err?.response?.data?.message) {
+                setError(err.response.data.message)
+            } else {
+                setError("Login failed. Please try again.")
+            }
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -49,13 +79,34 @@ export const Login = () => {
                     <p>Login to your account</p>
                 </div>
                 <form onSubmit={handleSubmit}>
+                    {error && <div className="error-message">{error}</div>}
+                    
                     <label htmlFor="email">Email: </label>
-                    <input type="text" id="email" name="email" placeholder="johndoe@company.com" onChange={handleChange}/>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="johndoe@company.com" 
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        disabled={isLoading}
+                    />
 
                     <label htmlFor="password">Password: </label>
-                    <input type="password" name="password" id="password" onChange={handleChange}/>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        disabled={isLoading}
+                    />
 
-                    <Button type={ButtonType.submit}>Submit</Button>
+                    <Button type={ButtonType.submit}>
+                        {isLoading ? "Logging in..." : "Submit"}
+                    </Button>
                 </form>
                 <Link to="/register" className="login-reg">Create an account</Link>
             </section>

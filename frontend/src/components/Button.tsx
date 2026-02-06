@@ -2,7 +2,9 @@ type Props = {
     isTransparent?: boolean,
     type?: ButtonType,
     onclick?: ()=>void,
-    children: React.ReactNode;
+    className?: string,
+    children: React.ReactNode,
+    stopPropagation?: Boolean;
 }
 
 export enum ButtonType {
@@ -11,10 +13,13 @@ export enum ButtonType {
     reset = "reset"
 }
 
-export const Button = ({isTransparent, type = ButtonType.button, onclick, children }: Props) => {
+export const Button = ({isTransparent, type = ButtonType.button, onclick, className, stopPropagation, children }: Props) => {
     return <button 
-    className={isTransparent? "transparent": "solid"} 
+    className={isTransparent? `transparent ${className}`: `solid ${className}`} 
     type={type}
-    onClick={onclick}> {children}
+    onClick={(e) => {
+        stopPropagation && e.stopPropagation()
+        onclick?.();
+    }}> {children}
     </button>
 }

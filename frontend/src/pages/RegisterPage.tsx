@@ -1,6 +1,19 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import { useEffect } from "react"
 
 export const Register = () => {
+    const savedUser = localStorage.getItem('user')
+    let user_id = 0
+    if (savedUser) {
+        user_id = JSON.parse(savedUser)['user_id']
+    }
+    const navigate = useNavigate()
+    useEffect(()=>{
+        if (user_id !== 0) {
+            navigate("/dashboard")
+        }
+    }, [])
     return (
         <main>
             <section className="standalone">

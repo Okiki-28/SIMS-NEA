@@ -10,12 +10,11 @@ main, body {
 }
 
 main {
-    min-height: 100vh;
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10px;
+    position: relative;
 }
 
 
@@ -37,11 +36,154 @@ a {
     border-radius: 10px;
     border-width: 0px;
     box-shadow: 0px 0px 3px 1px white;
+    cursor: pointer;
 }
 
 .solid:hover {
     transform: translateY(-3px);
     transition: all 0.2s ease-in-out;
+}
+
+.dialog-box {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    /* background-color: wheat; */
+    backdrop-filter: blur(5px);
+}
+
+.dialog-box .box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #40476d;
+    color: #fbfaf8;
+    width: 300px;
+    height: 200px;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0px 0px 10px 1px black;
+    border-radius: 15px;
+}
+
+.dialog-box .box .solid {
+    backdrop-filter: blur(50px);
+    color: white;
+}
+
+.dialog-box p {
+    font-size: 18px;
+    text-align: center;
+    font-weight: 1000;
+}
+
+.dialog-box.active {
+    display: flex;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    z-index: 998;
+    backdrop-filter: blur(5px);
+}
+
+.modal .box {
+    padding: 30px;
+    min-width: 40vw;
+    min-height: 60vh;
+    background-color: #40476d;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 1px black;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: white;
+}
+
+.modal .box h1 {
+    margin-bottom: 20px;
+}
+
+.modal .box input,
+.modal .box select {
+    padding: 5px;
+    width: 250px;
+    outline: none;
+    border-width: 0px;
+    margin: 10px 5px;
+    border-radius: 5px;
+}
+
+.modal .box select {
+    max-width: 250px;
+    text-align: center;
+}
+
+.modal .box form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;    
+    width: 100%;
+}
+
+.modal .box label {
+    margin-left: 50px;
+}
+
+.modal .box button[type="submit"] {
+    align-self: center;
+    color: white;
+}
+
+.modal .box .solid.cancel {
+    background-color: red;
+    box-shadow: none;
+    width: 35px;
+    height: 35px;
+    font-weight: bold;
+    font-size: small;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+}
+
+.modal .box h3 {
+    font-size: 17px;
+}
+
+.modal .box h4 {
+    font-weight: 100;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.modal .box .view-prod {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}
+
+.modal.active {
+    display: flex;
 }
 
 section.standalone {
@@ -146,10 +288,17 @@ section.standalone.register form button {
 /* ----------Dashboard */
 main.main-layout {
     position: relative;
+    z-index: 0;
     align-items: flex-start;
     background-color: #fbfaf8;
-    padding-top: 120px;
-    padding-left: 20%;
+    margin-top: 50px;
+    margin-left: 0%;
+}
+
+main.main-layout .functionality .solid {
+    color: #fbfaf8;
+    box-shadow: 0px 1px 3px 1px #000;
+    outline: none;
 }
 
 main .left-bar {
@@ -163,6 +312,8 @@ main .left-bar {
     font-size: 22px;
     background-color: #5fb49c;
     border-bottom-right-radius: 30px;
+    box-shadow: 0px 0px 5px 1px #40476d;
+    z-index: 10;
 }
 
 main .left-bar ul {
@@ -172,10 +323,15 @@ main .left-bar ul {
     gap: 40px;
 }
 
+main .left-bar ul li a {
+    text-decoration: none;
+}
+
 main .left-bar ul li.active {
     color: #fbfaf8;
     font-weight: 1000;
     text-decoration: underline;
+    cursor: pointer;
 }
 
 main .top-bar {
@@ -186,6 +342,7 @@ main .top-bar {
     justify-content: space-between;
     width: 83%;
     padding: 20px;
+    background-color: #fbfaf8;
 }
 
 main .top-bar .greeting h1 {
@@ -197,6 +354,7 @@ main .overview {
     justify-content: space-evenly;
     width: 100%;
     margin-top: 20px;
+    gap: 100px;
 }
 
 main .overview div {
@@ -209,6 +367,14 @@ main .overview div {
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
+    box-shadow: 0px 0px 5px 1px black;
+    color: white;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+main .overview div:hover {
+    transform: translateY(-5px);
 }
 
 main .overview div h2 {
@@ -225,19 +391,41 @@ main .overview div .number {
 main.inventory {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
 }
 
+
 main .inventory-options {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    gap: 40px;
     background-color: #40476d;
     border-radius: 10px;
     color: #fbfaf8;
     padding: 40px;
     margin-left: 70px;
+    box-shadow: 0px 0px 5px 1px black;
+}
+
+main .inventory-options .upper-bar {
+    display: flex;
+    gap: 40px;
+    margin: 5px;
+    justify-content: flex-end;
+}
+
+main .inventory-options .lower-bar {
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+main .inventory-options .solid {
+    color: white;
+    font-size: 15px;
 }
 
 main .inventory-options input,
@@ -261,6 +449,16 @@ main .product-grid {
     margin-top: 50px;
     background-color: #40476d;
     margin-left: 100px;
+    box-shadow: 0px 0px 5px 1px black;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+main .product-grid .solid {
+    font-size: small;
+    margin: 0;
+    color: white;
+    margin: 0 5px;
 }
 
 main .product-grid table {
@@ -268,9 +466,14 @@ main .product-grid table {
     color: #fbfaf8;
 }
 
+main .product-grid tbody tr:hover {
+    background-color: #676f9c;
+    cursor: pointer;
+}
+
 main .product-grid td,
 main .product-grid th {
-    padding: 20px;
+    padding: 15px;
     text-align: left;
     border-right: 1px solid #fbfaf8;
     
@@ -279,6 +482,20 @@ main .product-grid th {
     border-bottom: 1px solid #fbfaf8;
 }
 
+main .product-grid thead tr th:last-child,
+main .product-grid tbody tr td:last-child {
+    border-right: 0px;
+}
+
+main .product-grid thead tr th:first-child,
+main .product-grid tbody tr td.center {
+    text-align: center;
+}
+
 main .left-bar .top-bar .overview .number .inventory-options .product-grid {
     font: optional;
+}
+
+.logout {
+    box-shadow: 0px 0px 5px 1px black;
 }

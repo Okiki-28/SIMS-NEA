@@ -3,6 +3,7 @@ import './App.css';
 import MainLayout from './layout/MainLayout';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Login } from './pages/LoginPage';
+import { Logout } from './pages/Logout';
 import { Register } from './pages/RegisterPage';
 import { Home } from './pages/Homepage';
 import { RegisterNew } from './pages/RegisterNew';
@@ -11,23 +12,25 @@ import { Dashboard } from './pages/Dashboard';
 import { Inventory } from './pages/Inventory';
 
 import { Provider } from 'react-redux';
-import { authStore } from './store/authstore';
+import { store } from './store/authstore';
 
 function App() {
   return (
-    <Provider store={authStore}>
+    <Provider store={store}>
       <Router>
           <Routes>
             {/* Runs through the Main Layout format */}
             <Route path='/' element={<MainLayout><Home /></MainLayout>}/>
+            <Route path='/home' element={<MainLayout><Home /></MainLayout>}/>
+            <Route path='/dashboard' element={<MainLayout><Dashboard /></MainLayout>}/>
+            <Route path='/inventory' element={<MainLayout><Inventory /></MainLayout>}/>
 
             {/* Does not Run through the main layout format */}
             <Route path='/register' element={<Register />}/>
             <Route path='/register-new' element={<RegisterNew />}/>
             <Route path='/register-existing' element={<RegisterExisting />}/>
             <Route path='/login' element={<Login />}/> 
-            <Route path='/dashboard' element={<Dashboard/>}/>
-            <Route path='/inventory' element={<Inventory/>}/>
+            <Route path='/logout' element={<Logout />}/> 
             <Route path='*' element={<h1>Page not found !!</h1>}/>
           </Routes>
       </Router>
