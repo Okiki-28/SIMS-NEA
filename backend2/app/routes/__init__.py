@@ -4,6 +4,7 @@ from app.routes.companies import company_bp
 from app.routes.products import product_bp
 from app.routes.suppliers import supplier_bp
 from app.routes.categories import category_bp
+from app.routes.sales import sale_bp
 
 def register_routes(app):
     app.register_blueprint(auth_bp)
@@ -12,3 +13,4 @@ def register_routes(app):
     app.register_blueprint(product_bp)
     app.register_blueprint(supplier_bp)
     app.register_blueprint(category_bp)
+    app.register_blueprint(sale_bp)

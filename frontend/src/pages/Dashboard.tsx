@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom"
 
 export const Dashboard = () => {
     const [productCount, setProductCount] = useState(0)
+    const [lowStockCount, setLowStockCount] = useState(0)
+    const [recentSales, setRecentSales] = useState(0)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     useEffect(() => {
@@ -30,10 +32,31 @@ export const Dashboard = () => {
                 setProductCount(response.data.product_count)
                 return response.data.product_count
             } catch {
-                console.log("")
+                console.log("Erro getting product count")
             }
         }
+        const getLowStockCount = async () => {
+            try {
+                const response = await axios.post("http://127.0.0.1:5000/api/products/get-low-stock-count", {"company_reg_no": company_reg})
+                setLowStockCount(response.data.low_stock_count)
+                return response.data.low_stock_count
+            } catch {
+                console.log("Error getting low stock count")
+            }
+        }
+        const getRecentSales = async () => {
+            try {
+                const response = await axios.post("http://127.0.0.1:5000/api/sales/get-recent-sales", {"company_reg_no": company_reg})
+                console.log(response.data)
+                setRecentSales(response.data.total_sales)
+                return response.data.low_stock_count
+            } catch {
+                console.log("Error getting recent sales")
+            }
+        }
+        getLowStockCount()
         getProductCount()
+        getRecentSales()
     }, [company_reg])
 
 
@@ -47,13 +70,13 @@ export const Dashboard = () => {
                 </div>
                 <div className="low-stock-alerts">
                     <h2>Low Stock Alerts</h2>
-                    <p className="number">17</p>
+                    <p className="number">{lowStockCount}</p>
                     <p className="comment">up 5% from last week</p>
                 </div>
                 <div className="recent-sales">
                     <h2>Recent Sales</h2>
-                    <p className="number">$12,000</p>
-                    <p className="comment">up 5% from last week</p>
+                    <p className="number">£{recentSales}</p>
+                    <p className="comment">in the last month</p>
                 </div>
                 <div className="monthly-revenue">
                     <h2>Monthly Revenue</h2>

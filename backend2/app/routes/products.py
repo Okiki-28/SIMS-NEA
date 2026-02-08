@@ -10,6 +10,7 @@ from app.utils.fail import fail
 from app.utils.ok import ok
 from app.utils.company_reg_encrypt import encrypt_reg_no, decrypt_reg_no
 from app.utils.check_product_status import checkProductStatus
+from app.utils.low_stock import isLowStock, isAlmostLowStock
 
 from sqlalchemy import func
 
@@ -29,7 +30,8 @@ def get_all_products():
         "quantity": prod.quantity,
         "unit_price": prod.unit_price,
         "supplier": prod.supplier.name,
-        "status": checkProductStatus(prod.quantity, prod.reorder_level)
+        "status": checkProductStatus(prod.quantity, prod.reorder_level),
+        "reorder_level": prod.reorder_level
     } for prod in products]
 
     return data
@@ -54,6 +56,29 @@ def get_product():
         "supplier_id": product.supplier.id,
         "supplier": product.supplier.name
     }
+
+    return data
+
+@product_bp.route("/get-some", methods=["POST"])
+def get_some_product():
+    data = request.get_json()
+    product_ids = data.get("cart")
+    company_reg_no = decrypt_reg_no(data.get("company_reg"))
+
+    all_products = Product.query.filter(Product.id.in_(product_ids), Product.company_reg_no == company_reg_no)
+
+    data = [{
+        "id": product.id,
+        "name": product.name,
+        "description": product.description,
+        "quantity": product.quantity,
+        "unit_price": product.unit_price,
+        "reorder_level": product.reorder_level,
+        "category": product.category.name,
+        "category_id": product.category.id,
+        "supplier_id": product.supplier.id,
+        "supplier": product.supplier.name
+    } for product in all_products]
 
     return data
 
@@ -118,10 +143,10 @@ def edit_product():
     product_id = payload.get("id")
     company_reg_no = decrypt_reg_no(payload.get("company_reg_no"))
 
-    # if not product_id:
-    #     return fail(details="No product id")
-    # if not company_reg_no:
-    #     return fail(details="No company reg no")
+    if not product_id:
+        return fail(details="No product id")
+    if not company_reg_no:
+        return fail(details="No company reg no")
 
     product = Product.query.filter_by(id=product_id, company_reg_no=company_reg_no).first()
 
@@ -162,4 +187,19 @@ def get_total_count():
     data = {
         "product_count": product_count
     }
+    return jsonify(data)
+
+@product_bp.route("/get-low-stock-count", methods=["POST"])
+def get_low_Stock_Count():
+    payload = request.get_json()
+    company_reg_no = decrypt_reg_no(payload.get("company_reg_no"))
+
+    low_stock_count = db.session.query(Product)\
+    .filter((Product.company_reg_no == company_reg_no) & (Product.quantity <= Product.reorder_level))\
+    .count()
+
+    data = {
+        "low_stock_count": low_stock_count
+    }
+
     return jsonify(data)

@@ -11,7 +11,6 @@ export const Home = () => {
         const savedUser = localStorage.getItem('user')
         if (savedUser) {
             const user = JSON.parse(savedUser)
-            alert(user["user_id"])
             navigate("/dashboard")
         } else {
             navigate("/register")

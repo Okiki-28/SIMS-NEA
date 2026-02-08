@@ -2,6 +2,8 @@ from app import db
 from app.models.company import Company
 from flask import Blueprint, jsonify, request
 
+from app.utils.company_reg_encrypt import decrypt_reg_no
+
 company_bp = Blueprint("company", __name__, url_prefix="/api/companies")
 
 @company_bp.route("", methods=["GET"])
@@ -28,20 +30,18 @@ def get_all_companies():
 
 @company_bp.route("", methods=["POST"])
 def get_company():
-    data = request.get_json()
-    company_id = data.get['company_id']
+    payload = request.get_json()
+    company_reg_no = decrypt_reg_no(payload.get('company_reg_no'))
 
-    company = Company.query.get(company_id)
+    company = Company.query.filter_by(reg_no = company_reg_no).first()
     data = {
-        "reg_no": company.reg_no,
-        "name": company.name,
-        "address": company.address,
-        "phone": company.phone,
-        "tax_id": company.tax_id,
-        "size": company.size
+        "company_name": company.name,
+        "company_reg_no": company.reg_no,
+        "company_address": company.address,
+        "company_tel": company.phone,
+        "company_tax": company.tax_id,
+        "company_size": company.size,
+        "company_threshold": company.threshold
     }
 
-    return jsonify({
-        "success": True,
-        "data": data
-    })
+    return data

@@ -1,5 +1,7 @@
 from app import db
 
+from sqlalchemy import Numeric
+
 class Company(db.Model):
 
     __tablename__ = "company"
@@ -27,6 +29,9 @@ class Company(db.Model):
         db.String(20)
     )
     size = db.Column(
-        db.Integer,
-        autoincrement=True
+        db.Integer
+    )
+    threshold = db.Column(
+        Numeric(3, 1),
+        default=0.2
     )

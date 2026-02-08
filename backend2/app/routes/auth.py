@@ -53,7 +53,8 @@ def register_new():
         name = company_name,
         address = company_address,
         phone = company_tel,
-        tax_id = company_tax_id
+        tax_id = company_tax_id,
+        size = 1
     )
 
     db.session.add(company)
@@ -116,9 +117,10 @@ def register_existing():
     elif not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
     
-    companyRegExists = db.session.query(Company.reg_no).filter(Company.reg_no == company_reg_no).first()  
-    if not companyRegExists:
+    company = db.session.query(Company.reg_no).filter(Company.reg_no == company_reg_no).first()  
+    if not company:
         return fail(details=f"Company with registration number '{company_reg_no}' not found")
+    
     
 
     salt = os.urandom(16)
@@ -132,14 +134,16 @@ def register_existing():
         tel = user_tel,
         password_hash = password_hash,
         salt_hex = salt_hex,
-        role = user_role,
+        role = user_role.lower(),
         company_reg_no = company_reg_no,
         security_question = security_question,
         security_response = security_response
     )
 
-    # db.session.add(user)
-    # db.session.commit()
+    company.size += 1
+
+    db.session.add(user)
+    db.session.commit()
 
     session['user_id'] = user.id
     session['first_name'] = user.first_name
@@ -217,7 +221,7 @@ def status():
         "first_name": session.get('first_name')
     }
 
-@auth_bp.route("/logout", methods=["post"])
+@auth_bp.route("/logout", methods=["POST"])
 def logout():
     if 'user_id' in session:
         session.clear()

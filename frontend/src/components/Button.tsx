@@ -4,7 +4,7 @@ type Props = {
     onclick?: ()=>void,
     className?: string,
     children: React.ReactNode,
-    stopPropagation?: Boolean;
+    stopPropagation?: Boolean,
 }
 
 export enum ButtonType {

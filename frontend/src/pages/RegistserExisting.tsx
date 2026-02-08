@@ -65,7 +65,11 @@ export const RegisterExisting = () => {
                     {/* Add dropdown menu here */}
                     <div>
                         <label htmlFor="user_role">Role: </label>
-                        <input type="text" id="user_role" name="user_role" onChange={handleChange} />
+                        <select name="user_role" id="user_role" onChange={handleChange}>
+                            <option value="">--Select Role--</option>
+                            <option value="admin">Admin</option>
+                            <option value="staff">Staff</option>
+                        </select>
                     </div>
                     <div>
                         <label htmlFor="user_email">Email</label>

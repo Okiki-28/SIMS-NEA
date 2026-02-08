@@ -35,8 +35,10 @@ a {
     background-color: #5fb49c;
     border-radius: 10px;
     border-width: 0px;
-    box-shadow: 0px 0px 3px 1px white;
+    box-shadow: 0px 1px 3px 1px white;
     cursor: pointer;
+    color: #fbfaf8;
+    outline: none;
 }
 
 .solid:hover {
@@ -66,23 +68,29 @@ a {
     justify-content: center;
     background-color: #40476d;
     color: #fbfaf8;
-    width: 300px;
-    height: 200px;
+    width: 350px;
+    height: 250px;
     flex-direction: column;
     gap: 20px;
-    box-shadow: 0px 0px 10px 1px black;
+    box-shadow: 0px 1px 10px 1px black;
     border-radius: 15px;
+    padding: 10px;
 }
 
 .dialog-box .box .solid {
     backdrop-filter: blur(50px);
     color: white;
+    margin: 20px;
 }
 
 .dialog-box p {
     font-size: 18px;
     text-align: center;
     font-weight: 1000;
+}
+
+.dialog-box .box .solid.cancel {
+    background-color: red;
 }
 
 .dialog-box.active {
@@ -108,7 +116,7 @@ a {
     min-height: 60vh;
     background-color: #40476d;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px 1px black;
+    box-shadow: 0px 1px 10px 1px black;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -195,7 +203,7 @@ section.standalone {
     color: #fbfaf8;
     padding: 40px;
     border-radius: 30px;
-    box-shadow: 0px 0px 5px 1px black;
+    box-shadow: 0px 1px 3px 1px #000;
 }
 
 section.standalone.login  input {
@@ -346,6 +354,7 @@ main .top-bar {
 }
 
 main .top-bar .greeting h1 {
+    margin-bottom: 10px;
     font-size: 40px;
 }
 
@@ -358,7 +367,7 @@ main .overview {
 }
 
 main .overview div {
-    background-color: #5fb49c;
+    background-color: #40476d;
     width: 150px;
     height: 160px;
     padding: 10px;
@@ -367,7 +376,7 @@ main .overview div {
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-    box-shadow: 0px 0px 5px 1px black;
+    box-shadow: 0px 1px 3px 1px #000;
     color: white;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
@@ -388,7 +397,8 @@ main .overview div .number {
     font-weight: 500;
 }
 
-main.inventory {
+main.inventory,
+main.counter-sale {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -396,8 +406,8 @@ main.inventory {
     flex-wrap: wrap;
 }
 
-
-main .inventory-options {
+main .inventory-options,
+main .search-item {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -406,7 +416,15 @@ main .inventory-options {
     color: #fbfaf8;
     padding: 40px;
     margin-left: 70px;
-    box-shadow: 0px 0px 5px 1px black;
+    box-shadow: 0px 1px 3px 1px #000;
+}
+
+main .search-item {
+    align-items: center;
+}
+
+main .search-item .paid-exit {
+    margin-top: 40px;
 }
 
 main .inventory-options .upper-bar {
@@ -430,7 +448,8 @@ main .inventory-options .solid {
 
 main .inventory-options input,
 main .inventory-options select,
-main .inventory-options select option {
+main .inventory-options select option,
+main .search-item .search input {
     width: 250px;
     font-size: 14px;
     padding: 7px;
@@ -445,11 +464,17 @@ main .inventory-options input {
     text-align: left;
 }
 
+main .search-item .search input {
+    width: 500px;
+    text-align: center;
+    font-size: 16px;
+}
+
 main .product-grid {
     margin-top: 50px;
     background-color: #40476d;
     margin-left: 100px;
-    box-shadow: 0px 0px 5px 1px black;
+    box-shadow: 0px 1px 3px 1px #000;
     border-radius: 10px;
     overflow: hidden;
 }
@@ -492,10 +517,54 @@ main .product-grid tbody tr td.center {
     text-align: center;
 }
 
-main .left-bar .top-bar .overview .number .inventory-options .product-grid {
-    font: optional;
+main.settings {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 60vw;
 }
 
-.logout {
-    box-shadow: 0px 0px 5px 1px black;
+main.settings .solid {
+    box-shadow: 0px 1px 3px 1px #000;
+}
+
+main.settings form {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main.settings form div {
+    display: flex;
+    justify-content: space-between;
+    min-width: 30vw;
+    margin-bottom: 20px;
+}
+
+main.settings form input,
+main.settings form select {
+    background-color: transparent;
+    padding: 5px;
+    font-size: 15px;
+    width: 250px;
+    border: 2px solid black;
+}
+
+main.settings form input:disabled,
+main.settings form select:disabled {
+    border: 0px;
+    color: #333;
+}
+
+main.settings form label {
+    font-size: 18px;
+}
+
+main.reports .solid {
+    box-shadow: 0px 1px 3px 1px #000;
+}
+
+main .left-bar .top-bar .overview .number .inventory-options .product-grid {
+    color: inherit;
 }
