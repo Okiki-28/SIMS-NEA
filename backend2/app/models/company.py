@@ -35,3 +35,7 @@ class Company(db.Model):
         Numeric(3, 1),
         default=0.2
     )
+    time_period = db.Column(
+        db.Integer,
+        default = 30
+    )

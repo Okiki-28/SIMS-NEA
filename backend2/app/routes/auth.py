@@ -84,12 +84,12 @@ def register_new():
 
     session['user_id'] = user.id
     session['first_name'] = user.first_name
-    session['company_reg'] = user.company_reg_no
+    session['company_reg_no'] = user.company_reg_no
 
     data = {
         'user_id': user.id,
         'username': user.first_name,
-        'company_reg': user.company_reg_no,
+        'company_reg_no': user.company_reg_no,
         'loggedIn': True
     }
 
@@ -147,12 +147,12 @@ def register_existing():
 
     session['user_id'] = user.id
     session['first_name'] = user.first_name
-    session['company_reg'] = user.company_reg_no
+    session['company_reg_no'] = user.company_reg_no
 
     data = {
         'user_id': user.id,
         'username': user.first_name,
-        'company_reg': user.company_reg_no,
+        'company_reg_no': user.company_reg_no,
         'loggedIn': True
     }
 
@@ -189,7 +189,6 @@ def login():
 
     if not email or not password:
         return fail(details="Fill in all fields")
-    
     user = User.query.filter_by(email = email).first()
     if not user:
         return fail(details="Invalid email or password")
@@ -207,7 +206,7 @@ def login():
     data = {
         'user_id': user.id,
         'username': user.first_name,
-        'company_reg': user.company_reg_no,
+        'company_reg_no': user.company_reg_no,
         'loggedIn': True
     }
     

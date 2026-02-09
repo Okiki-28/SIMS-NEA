@@ -16,10 +16,10 @@ export const Settings = () => {
         }));
     }, [dispatch]);
     const savedUser = localStorage.getItem('user')
-    let company_reg = ""
+    let company_reg_no = ""
     let user_id= ""
     if (savedUser) {
-        company_reg = JSON.parse(savedUser)['company_reg']
+        company_reg_no = JSON.parse(savedUser)['company_reg_no']
         user_id = JSON.parse(savedUser)['user_id']
     }
 
@@ -31,8 +31,9 @@ export const Settings = () => {
         company_tel: "",
         company_tax: "",
         company_size: 0,
-        company_reg_no: company_reg,
+        company_reg_no: company_reg_no,
         company_threshold: 0,
+        company_report_time_period: 1,
         user_first_name: "",
         user_last_name: "",
         user_role: "",
@@ -43,7 +44,7 @@ export const Settings = () => {
     useEffect(() => {
         const payload = {
             "user_id": user_id,
-            "company_reg_no": company_reg
+            "company_reg_no": company_reg_no
         }
         
         const fetchDetails = async () => {
@@ -68,7 +69,7 @@ export const Settings = () => {
         }
         
         fetchDetails();
-    }, [user_id, company_reg]);
+    }, [user_id, company_reg_no]);
 
     const handleChange = (e: any) => {
         const { name, value } = e.target
@@ -86,6 +87,7 @@ export const Settings = () => {
             const response = await axios.post(`http://127.0.0.1:5000/api/users/edit`, formData, { withCredentials: true });
             const data = response.data
             console.log(data)
+            alert()
             navigate(0)
             return data
         } catch {
@@ -140,7 +142,7 @@ export const Settings = () => {
                 <form>
                     <div>
                         <label htmlFor="company_Reg_no">Company Name: </label>
-                        <input type="text" id="company_Reg_no" name="company_Reg_no" onChange={handleChange} value={company_reg} disabled={isDisabled}/>
+                        <input type="text" id="company_Reg_no" name="company_Reg_no" onChange={handleChange} value={company_reg_no} disabled={isDisabled}/>
                     </div>
                     <div>
                         <label htmlFor="company_name">Company Name: </label>
@@ -165,6 +167,19 @@ export const Settings = () => {
                     <div>
                         <label htmlFor="company_threshold">Company Threshold: </label>
                         <input type="tel" id="company_threshold" name="company_threshold" onChange={handleChange} value={userDetails.company_threshold}  disabled={isDisabled}/>
+                    </div>
+                    <div>
+                        <label htmlFor="company_report_time_period">Report Time: </label>
+                        <select name="company_report_time_period" id="company_report_time_period" onChange={handleChange} value={userDetails.company_report_time_period} disabled={isDisabled}>
+                            <option value="7">7 days</option>
+                            <option value="14">14 days</option>
+                            <option value="30">30 days</option>
+                            <option value="60">60 days</option>
+                            <option value="90">90 days</option>
+                            <option value="180">6 Months</option>
+                            <option value="365">1 Year</option>
+                            <option value="3650">All time</option> {/* 10 years */}
+                        </select>
                     </div>
                 </form>
             {

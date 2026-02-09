@@ -38,10 +38,10 @@ export const CounterSale = () => {
         }));
     }, [dispatch]);
     const savedUser = localStorage.getItem('user')
-    let company_reg = ""
+    let company_reg_no = ""
     let user_id= ""
     if (savedUser) {
-        company_reg = JSON.parse(savedUser)['company_reg']
+        company_reg_no = JSON.parse(savedUser)['company_reg_no']
         user_id = JSON.parse(savedUser)['user_id']
     }
 
@@ -83,7 +83,7 @@ export const CounterSale = () => {
         setModalHeading("View")
         const data = {
             "user_id": user_id,
-            "company_reg_no": company_reg,
+            "company_reg_no": company_reg_no,
             "product_id": prod_id
         }
         const getProductDetails = async () => {
@@ -150,11 +150,11 @@ export const CounterSale = () => {
         const fetchProducts = async () => {
             try {
                 const data = {
-                    "company_reg": company_reg,
+                    "company_reg_no": company_reg_no,
                     "user_id": user_id
                 }
                 const response = await axios.post("http://127.0.0.1:5000/api/products/get-all", data)
-                console.log(response.data, company_reg)
+                console.log(response.data, company_reg_no)
                 setAll_products(response.data)
             } catch {
                 console.log("Error getting all products")
@@ -165,12 +165,12 @@ export const CounterSale = () => {
             try {
                 const cart_of_id = Object.keys(cart).map(Number);
                 const data = {
-                    "company_reg": company_reg,
+                    "company_reg_no": company_reg_no,
                     "user_id": user_id,
                     "cart": cart_of_id
                 }
                 const response = await axios.post("http://127.0.0.1:5000/api/products/get-some", data)
-                console.log(response.data, company_reg)
+                console.log(response.data, company_reg_no)
                 setAddedProducts(response.data)
             } catch {
                 console.log("Error getting added products")
@@ -178,7 +178,7 @@ export const CounterSale = () => {
         }
         fetchAddedProducts();
         
-    }, [company_reg, user_id, cart])
+    }, [company_reg_no, user_id, cart])
 
     const filteredProducts = useMemo(() => {
         return all_products.filter(prod => {
@@ -194,7 +194,7 @@ export const CounterSale = () => {
         }
         const checkout = async () => {
             const data = {
-                "company_reg": company_reg,
+                "company_reg_no": company_reg_no,
                 "user_id": user_id,
                 "items": cart
             }

@@ -23,7 +23,8 @@ class User(db.Model):
     email = db.Column(
         db.String(100),
         nullable = False,
-        unique=True
+        unique=True,
+        index=True
     )
     tel = db.Column(
         db.String(20)
@@ -48,7 +49,8 @@ class User(db.Model):
     company_reg_no = db.Column(
         db.String(10),
         db.ForeignKey("company.reg_no", ondelete="CASCADE"),
-        nullable = False
+        nullable = False,
+        index=True
     )
     security_question = db.Column(
         db.String(50),

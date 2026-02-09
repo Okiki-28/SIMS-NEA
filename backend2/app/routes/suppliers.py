@@ -7,14 +7,18 @@ from flask import Blueprint, jsonify, request
 
 from app.utils.ok import ok
 from app.utils.fail import fail
-from app.utils.company_reg_encrypt import decrypt_reg_no
+from app.utils.validate_user import validate_user
 
 supplier_bp = Blueprint("supplier", __name__, url_prefix="/api/suppliers")
 
 @supplier_bp.route("", methods=["POST"])
 def get_all_suppliers():
-    data = request.get_json()
-    company_reg_no = decrypt_reg_no(data.get("company_reg"))
+    payload = request.get_json()
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
     suppliers = Supplier.query.filter_by(company_reg_no = company_reg_no).all()
 
     data_list = [
@@ -31,13 +35,18 @@ def get_all_suppliers():
 
 @supplier_bp.route("/add", methods=["POST"])
 def add_supplier():
-    data = request.get_json()
+    payload = request.get_json()
 
-    name = data.get("name")
-    phone = data.get("phone")
-    email = data.get("email")
-    address = data.get("address")
-    company_reg_no = decrypt_reg_no(data.get("company_reg_no"))
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
+    
+    name = payload.get("name")
+    phone = payload.get("phone")
+    email = payload.get("email")
+    address = payload.get("address")
 
     supplier = Supplier(
         name = name,
@@ -54,8 +63,16 @@ def add_supplier():
 
 @supplier_bp.route("/<int:id>", methods=["DELETE"])
 def delete_category(id):
-    category = Supplier.query.get(id)
+    payload = request.get_json()
 
+    user_id = payload.get("user_id")
+    company_reg_no = payload.get("company_reg_no")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
+
+    category = Supplier.query.get(id)
+    
     if not category:
         return fail()
     

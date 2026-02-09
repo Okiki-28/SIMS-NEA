@@ -13,10 +13,10 @@ export const Reports = () => {
         }));
     }, [dispatch]);
     const savedUser = localStorage.getItem('user')
-    let company_reg = ""
+    let company_reg_no = ""
     let user_id= ""
     if (savedUser) {
-        company_reg = JSON.parse(savedUser)['company_reg']
+        company_reg_no = JSON.parse(savedUser)['company_reg_no']
         user_id = JSON.parse(savedUser)['user_id']
     }
 

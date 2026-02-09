@@ -392,6 +392,10 @@ main .overview div h2 {
     text-align: left;
 }
 
+main.overview div .text {
+    font-size: 12px;
+}
+
 main .overview div .number {
     font-size: 20px;
     font-weight: 500;

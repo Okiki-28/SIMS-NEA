@@ -41,15 +41,19 @@ export const Login = () => {
         setIsLoading(true)
 
         try {
+            console.log(123)
             const response = await axios.post(`${BASE_URL}/login`, formData, { withCredentials: true });
             const data = response.data
+            console.log(response.data)
+            localStorage.clear()
             localStorage.setItem('user', JSON.stringify(data))
-            console.log("Login successful:", data );
+            console.log("Login successful:", data);
+            console.log(data)
             
             dispatch(login({
                 user_id: data.user_id, 
                 username: data.username,
-                company_reg: data.company_reg
+                company_reg_no: data.company_reg_no
             }))
             
             navigate("/dashboard")

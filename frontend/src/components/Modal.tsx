@@ -15,11 +15,16 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
             "name": "",
             "no_of_products": -1
         }])
-    const company_reg = useMemo(() => {
+    const company_reg_no = useMemo(() => {
         const savedUser = localStorage.getItem("user");
-        return savedUser ? JSON.parse(savedUser).company_reg : "";
+        return savedUser ? JSON.parse(savedUser).company_reg_no : "";
+    }, []);
+    const user_id = useMemo(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser).user_id : "";
     }, []);
     const [addProductFormData, setAddProductFormData] = useState({
+        "user_id": user_id,
         "id": data['id'],
         "name": data['name'],
         "description": data['description'],
@@ -30,12 +35,13 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         "category": data['category'],
         "category_id": data['category_id'],
         "supplier_id": data['supplier_id'],
-        "company_reg_no": company_reg
+        "company_reg_no": company_reg_no
     })
     useEffect(() => {
     if (!isActive || purpose !== "product") return;
 
     setAddProductFormData({
+        user_id: user_id,
         id: data?.id ?? 0,
         name: data?.name ?? "",
         description: data?.description ?? "",
@@ -46,28 +52,31 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         category: data?.category ?? "",   // handles id or name
         category_id: data?.category_id ?? "",
         supplier_id: data?.supplier_id ?? "",
-        company_reg_no: company_reg,
+        company_reg_no: company_reg_no,
     });
-    }, [data, isActive, purpose, company_reg]);
+    }, [data, isActive, purpose, company_reg_no]);
     const [addCategoryFormData, setAddCategoryFormData] = useState({
         "name": data['name'],
-        "company_reg": company_reg
+        "company_reg_no": company_reg_no,
+        "user_id": "user_id"
     })
     useEffect(() => {
     if (!isActive || purpose !== "category") return;
 
     setAddCategoryFormData({
         name: data?.name ?? "",
-        company_reg: company_reg,
+        company_reg_no: company_reg_no,
+        user_id: user_id
     });
-    }, [data, isActive, purpose, company_reg]);
+    }, [data, isActive, purpose, company_reg_no]);
 
     const [addSupplierFormData, setAddSupplierFormData] = useState({
         "name": data['name'],
         "email": data['email'],
         "address": data['address'],
         "phone": data['phone'],
-        "company_reg_no": company_reg
+        "company_reg_no": company_reg_no,
+        "user_id": user_id
     })
     useEffect(() => {
     if (!isActive || purpose !== "supplier") return;
@@ -77,9 +86,10 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         email: data?.email ?? "",
         address: data?.address ?? "",
         phone: data?.phone ?? "",
-        company_reg_no: company_reg,
+        company_reg_no: company_reg_no,
+        user_id: user_id
     });
-    }, [data, isActive, purpose, company_reg]);
+    }, [data, isActive, purpose, company_reg_no]);
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 
@@ -87,7 +97,8 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         const fetchCategories = async () => {
             try {
                 const data = {
-                    "company_reg": company_reg
+                    "user_id": user_id,
+                    "company_reg_no": company_reg_no
                 }
                 const response = await axios.post("http://127.0.0.1:5000/api/categories", data)
                 setAll_categories(response.data)
@@ -98,7 +109,8 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         const fetchSuppliers = async () => {
             try {
                 const data = {
-                    "company_reg": company_reg
+                    "user_id": user_id,
+                    "company_reg_no": company_reg_no
                 }
                 const response = await axios.post("http://127.0.0.1:5000/api/suppliers", data)
                 setAll_suppliers(response.data)
@@ -108,13 +120,14 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         }
     fetchSuppliers();
     fetchCategories();
-    }, [company_reg])
+    }, [company_reg_no])
 
     const handleProductSummit = (e: React.FormEvent) => {
         // e.preventDefault()
         console.log(addProductFormData)
         handleSubmit(e, addProductFormData)
         setAddProductFormData({
+            "user_id": user_id,
             "id": 0,
             "name": "",
             "description": "",
@@ -123,7 +136,7 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
             "price": 0,
             "supplier": "",
             "category": "",
-            "company_reg_no": company_reg,
+            "company_reg_no": company_reg_no,
             "category_id": 0,
             "supplier_id": 0
         })
@@ -137,7 +150,8 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         handleSubmit(e, addCategoryFormData)
         setAddCategoryFormData({
             "name": "",
-            "company_reg": company_reg
+            "company_reg_no": company_reg_no,
+            "user_id": user_id
         })
         onClose()
     }
@@ -152,7 +166,8 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
             "email": "",
             "address": "",
             "phone": "",
-            "company_reg_no": company_reg
+            "company_reg_no": company_reg_no,
+            "user_id": user_id
         })
         onClose()
     }

@@ -12,10 +12,10 @@ export const Navbar = () => {
 
     const savedUser = localStorage.getItem('user')
     let user 
-    let company_reg
+    let company_reg_no
     if (savedUser) {   
         user = JSON.parse(savedUser)['username']
-        company_reg = JSON.parse(savedUser)['company_reg']
+        company_reg_no = JSON.parse(savedUser)['company_reg_no']
     }
     let pageHeading = useSelector((state: any) => state.heading.value.heading)
     const closeModal = () => {

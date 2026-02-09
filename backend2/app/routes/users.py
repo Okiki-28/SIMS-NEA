@@ -5,6 +5,7 @@ from flask import Blueprint, jsonify, request
 from app.utils.ok import ok
 from app.utils.fail import fail
 from app.utils.hash_password import hash_password
+from app.utils.validate_user import validate_user
 
 user_bp = Blueprint("user", __name__, url_prefix="/api/users")
 
@@ -24,7 +25,8 @@ def get_all_users():
             "security question": u.security_question,
             "security response": u.security_response,
             "company reg no": u.company_reg_no,
-            "user_password": u.password_hash
+            "user_password": u.password_hash,
+            "salt": u.salt_hex
         }
         for u in users
     ]
@@ -38,6 +40,10 @@ def get_all_users():
 def get_user():
     payload = request.get_json()
     user_id = payload.get("user_id")
+    company_reg_no = payload.get("company_reg_no")
+
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
 
     user = User.query.filter_by(id = user_id).first()
 
@@ -58,6 +64,9 @@ def edit_user():
 
     company_reg_no = payload.get("company_reg_no")
     user_id = payload.get("user_id")
+
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
 
     user = User.query.filter_by(id=user_id, company_reg_no=company_reg_no).first()
 
@@ -84,6 +93,7 @@ def edit_user():
     company.phone = payload.get("company_tel", company.phone)
     company.tax_id = payload.get("company_tax", company.tax_id)
     company.threshold = payload.get("company_threshold", company.threshold)
+    company.time_period = payload.get("company_report_time_period", company.time_period)
 
     db.session.commit()
 

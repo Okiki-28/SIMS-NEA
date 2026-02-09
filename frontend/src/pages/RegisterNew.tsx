@@ -14,6 +14,9 @@ export const RegisterNew = () => {
     const navigate = useNavigate()
     const BASE_URL = "http://127.0.0.1:5000/api/auth"
 
+    const [error, setError] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+
     const [formData, setFormData] = useState({
         company_name: "",
         company_address: "",
@@ -39,9 +42,17 @@ export const RegisterNew = () => {
         }));
     }
 
-    const handleSubmit = () => {
-        axios.post(BASE_URL+"/register-new", formData)
-        navigate("/login")
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("")
+        setIsLoading(true)
+        try {
+            axios.post(BASE_URL+"/register-new", formData)
+            navigate("/login")
+        } catch(err:any) {
+            console.log("Login error:", err?.response?.status);
+            console.log("Error details:", err?.response?.data);
+        }
     }
 
     return (
@@ -52,6 +63,7 @@ export const RegisterNew = () => {
                     <p>Register with <em>New</em> company</p>
                 </div>
                 <form onSubmit={handleSubmit}>
+                    {error && <div className="error-message">{error}</div>}
                     <fieldset>
                         <legend>Company Details</legend>
                         <div>
@@ -119,7 +131,9 @@ export const RegisterNew = () => {
                             </div>
                         </div>
                     </fieldset>
-                    <Button type={ButtonType.submit}>Submit</Button>
+                    <Button type={ButtonType.submit}>
+                        {isLoading ? "Registering..." : "Submit"}
+                    </Button>
                 </form>
                 <Link to="/login" className="reg-login">Already have an account?</Link>
             </section>

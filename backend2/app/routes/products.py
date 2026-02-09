@@ -8,9 +8,11 @@ from flask import Blueprint, jsonify, request
 
 from app.utils.fail import fail
 from app.utils.ok import ok
-from app.utils.company_reg_encrypt import encrypt_reg_no, decrypt_reg_no
 from app.utils.check_product_status import checkProductStatus
 from app.utils.low_stock import isLowStock, isAlmostLowStock
+from app.utils.validate_user import validate_user
+
+from app.routes.categories import get_categories_count
 
 from sqlalchemy import func
 
@@ -18,8 +20,12 @@ product_bp = Blueprint("product", __name__, url_prefix="/api/products")
 
 @product_bp.route("/get-all", methods=["POST"])
 def get_all_products():
-    data = request.get_json()
-    company_reg_no = decrypt_reg_no(data.get("company_reg"))
+    payload = request.get_json()
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
     
     products = Product.query.filter(Product.company_reg_no == company_reg_no)
 
@@ -38,9 +44,13 @@ def get_all_products():
 
 @product_bp.route("/get", methods=["POST"])
 def get_product():
-    data = request.get_json()
-    product_id = data.get("product_id")
-    company_reg_no = decrypt_reg_no(data.get("company_reg_no"))
+    payload = request.get_json()
+    product_id = payload.get("product_id")
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
 
     product = Product.query.filter_by(id=product_id, company_reg_no=company_reg_no).first()
 
@@ -61,9 +71,13 @@ def get_product():
 
 @product_bp.route("/get-some", methods=["POST"])
 def get_some_product():
-    data = request.get_json()
-    product_ids = data.get("cart")
-    company_reg_no = decrypt_reg_no(data.get("company_reg"))
+    payload = request.get_json()
+    product_ids = payload.get("cart")
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
 
     all_products = Product.query.filter(Product.id.in_(product_ids), Product.company_reg_no == company_reg_no)
 
@@ -84,16 +98,22 @@ def get_some_product():
 
 @product_bp.route("/add", methods=["POST"])
 def add_product():
-    data = request.get_json()
+    payload = request.get_json()
 
-    company_reg_no = decrypt_reg_no(data.get("company_reg_no"))
-    product_name = data.get("name")
-    product_description = data.get("description") or ""
-    product_quantity = data.get("quantity") or 0
-    product_price = data.get("price")
-    product_reorder_level = data.get("reorder_level")
-    product_supplier_id = data.get("supplier_id")
-    product_category_id = data.get("category_id")
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
+    
+    product_name = payload.get("name")
+    product_description = payload.get("description") or ""
+    product_quantity = payload.get("quantity") or 0
+    product_price = payload.get("price")
+    product_reorder_level = payload.get("reorder_level")
+    product_supplier_id = payload.get("supplier_id")
+    product_category_id = payload.get("category_id")
+
 
 
     product = Product(
@@ -124,10 +144,18 @@ def add_product():
 
 @product_bp.route("/<int:id>", methods=["DELETE"])
 def delete_product(id):
+    payload = request.get_json()
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
+    
     product = Product.query.get(id)
 
     if not product:
         return fail()
+    
     
     product.category.number_of_items -= 1
 
@@ -140,13 +168,16 @@ def delete_product(id):
 @product_bp.route("/edit", methods=["POST"])
 def edit_product():
     payload = request.get_json()
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
+    
     product_id = payload.get("id")
-    company_reg_no = decrypt_reg_no(payload.get("company_reg_no"))
 
     if not product_id:
         return fail(details="No product id")
-    if not company_reg_no:
-        return fail(details="No company reg no")
 
     product = Product.query.filter_by(id=product_id, company_reg_no=company_reg_no).first()
 
@@ -161,45 +192,61 @@ def edit_product():
     db.session.commit()
     return ok(message=f"{product.name} has been updated")
 
-@product_bp.route("/low-Stock-count", methods=["POST"])
-def get_low_stock_count():
-    data = request.get_json()
-
-    company_reg_no = data.get("company_reg_no")
-    all_products = Product.query(Product.company_reg_no == company_reg_no)
-    low_stock_count = 0
-
-    for p in all_products:
-        if p.quantity < p.reorder_level:
-            low_stock_count += 1
-    
-    return ok(data=low_stock_count)
-
 @product_bp.route("/get-total-count", methods=["POST"])
 def get_total_count():
     payload = request.get_json()
 
-    company_reg_no = decrypt_reg_no(payload.get("company_reg_no"))
-    product_count = db.session.query(func.sum(Product.quantity))\
-    .filter(Product.company_reg_no == company_reg_no)\
-    .scalar() or 0
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
 
-    data = {
-        "product_count": product_count
-    }
-    return jsonify(data)
+    total_count = get_total_count(company_reg_no)
+    
+    return jsonify(total_count)
+
 
 @product_bp.route("/get-low-stock-count", methods=["POST"])
-def get_low_Stock_Count():
+def get_low_stock_count_route():
     payload = request.get_json()
-    company_reg_no = decrypt_reg_no(payload.get("company_reg_no"))
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+    
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
 
+    low_stock_count = get_low_stock_count(company_reg_no)
+    
+
+    return jsonify(low_stock_count)
+
+def get_low_stock_count(company_reg_no):
     low_stock_count = db.session.query(Product)\
     .filter((Product.company_reg_no == company_reg_no) & (Product.quantity <= Product.reorder_level))\
     .count()
 
+    product_count = db.session.query(Product)\
+    .filter((Product.company_reg_no == company_reg_no))\
+    .count()
+
     data = {
-        "low_stock_count": low_stock_count
+        "low_stock_count": low_stock_count,
+        "product_count": product_count
     }
 
-    return jsonify(data)
+    return data
+
+def get_total_count(company_reg_no):
+    product_count = db.session.query(func.sum(Product.quantity))\
+    .filter(Product.company_reg_no == company_reg_no)\
+    .scalar() or 0
+
+    categories_count = get_categories_count(company_reg_no)
+
+    data = {
+        "product_count": product_count,
+        "categories_count": categories_count
+    }
+
+    return data

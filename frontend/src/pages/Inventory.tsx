@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setHeading } from "../store/authstore";
-import { Link, useNavigate } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 
 export const Inventory = () => {
@@ -16,10 +16,10 @@ export const Inventory = () => {
         }));
     }, [dispatch]);
     const savedUser = localStorage.getItem('user')
-    let company_reg = ""
+    let company_reg_no = ""
     let user_id= ""
     if (savedUser) {
-        company_reg = JSON.parse(savedUser)['company_reg']
+        company_reg_no = JSON.parse(savedUser)['company_reg_no']
         user_id = JSON.parse(savedUser)['user_id']
     }
     
@@ -135,7 +135,7 @@ export const Inventory = () => {
         setModalHeading("View")
         const data = {
             "user_id": user_id,
-            "company_reg_no": company_reg,
+            "company_reg_no": company_reg_no,
             "product_id": prod_id
         }
         const getProductDetails = async () => {
@@ -155,8 +155,12 @@ export const Inventory = () => {
 
     const deleteProduct = (prod_id: number) => {
         const delProduct = async () => {
+            const payload = {
+                "user_id": user_id,
+                "company_reg_no": company_reg_no
+            }
             try {
-                const response = await axios.delete(`http://127.0.0.1:5000/api/products/${prod_id}`)
+                const response = await axios.delete(`http://127.0.0.1:5000/api/products/${prod_id}`, {data: payload})
                 setIsDialogActive(false)
                 navigate(0)
                 return response.data
@@ -175,7 +179,7 @@ export const Inventory = () => {
         const data = {
             "user_id": user_id,
             "product_id": prod_id,
-            "company_reg_no": company_reg
+            "company_reg_no": company_reg_no
         }
         const getProductDetails = async () => {
             try {
@@ -215,11 +219,11 @@ export const Inventory = () => {
         const fetchProducts = async () => {
             try {
                 const data = {
-                    "company_reg": company_reg,
+                    "company_reg_no": company_reg_no,
                     "user_id": user_id
                 }
                 const response = await axios.post("http://127.0.0.1:5000/api/products/get-all", data)
-                console.log(response.data, company_reg)
+                console.log(response.data, company_reg_no)
                 setAll_products(response.data)
             } catch {
                 console.log("Error")
@@ -228,7 +232,8 @@ export const Inventory = () => {
         const fetchSuppliers = async () => {
             try {
                 const data = {
-                    "company_reg": company_reg
+                    "company_reg_no": company_reg_no,
+                    "user_id": user_id
                 }
                 const response = await axios.post("http://127.0.0.1:5000/api/suppliers", data)
                 setAll_suppliers(response.data)
@@ -239,7 +244,8 @@ export const Inventory = () => {
         const fetchCategories = async () => {
             try {
                 const data = {
-                    "company_reg": company_reg
+                    "company_reg_no": company_reg_no,
+                    "user_id": user_id
                 }
                 const response = await axios.post("http://127.0.0.1:5000/api/categories", data)
                 setAll_categories(response.data)
@@ -250,7 +256,7 @@ export const Inventory = () => {
         fetchProducts();
         fetchSuppliers();
         fetchCategories();
-    }, [company_reg, user_id])
+    }, [company_reg_no, user_id])
 
     // Filter products using useMemo to avoid recalculating on every render
     const filteredProducts = useMemo(() => {

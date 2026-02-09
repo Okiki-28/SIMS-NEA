@@ -3,7 +3,7 @@ import { configureStore, createSlice} from "@reduxjs/toolkit";
 const initialState = {value: {
         user_id: -1,
         username: null,
-        company_reg: "",
+        company_reg_no: "",
         loggedIn: false
     }}
 const userSlice = createSlice({
@@ -11,11 +11,11 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action)=> {
-            const {user_id, username, company_reg} = action.payload
+            const {user_id, username, company_reg_no} = action.payload
 
             state.value.user_id = user_id;
             state.value.username = username;
-            state.value.company_reg = company_reg;
+            state.value.company_reg_no = company_reg_no;
             state.value.loggedIn = true;
         },
 
