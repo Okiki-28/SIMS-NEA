@@ -3,7 +3,7 @@ import { Modal } from "../components/Modal";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { setHeading } from "../store/authstore";
+import { setHeading } from "../store/store";
 import { data, Link, useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 
@@ -12,7 +12,8 @@ export const Inventory = () => {
     const navigate = useNavigate()
     useEffect(() => {
         dispatch(setHeading({
-            heading: "Inventory"
+            heading: "Inventory",
+            message: "Manage your Stock Inventory here"
         }));
     }, [dispatch]);
     const savedUser = localStorage.getItem('user')

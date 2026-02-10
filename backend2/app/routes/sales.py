@@ -20,7 +20,7 @@ from datetime import datetime, timedelta, timezone
 
 from decimal import Decimal
 
-sale_bp = Blueprint("Sales", __name__, url_prefix="/api/sales")
+sale_bp = Blueprint("sale", __name__, url_prefix="/api/sales")
 
 @sale_bp.route("/add", methods=["POST"])
 def add_new_sale():

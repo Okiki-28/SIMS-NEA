@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
-import { setHeading } from "../store/authstore";
+import { setHeading } from "../store/store";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "../components/Button";
 import axios from "axios";
@@ -12,16 +12,18 @@ export const Settings = () => {
     const navigate = useNavigate()
     useEffect(() => {
         dispatch(setHeading({
-            heading: "Settings"
+            heading: "Settings",
+            message: "Edit your profile and company settings here"
         }));
     }, [dispatch]);
-    const savedUser = localStorage.getItem('user')
-    let company_reg_no = ""
-    let user_id= ""
-    if (savedUser) {
-        company_reg_no = JSON.parse(savedUser)['company_reg_no']
-        user_id = JSON.parse(savedUser)['user_id']
-    }
+    const company_reg_no = useMemo(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser).company_reg_no : "";
+    }, []);
+    const user_id = useMemo(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser).user_id : "";
+    }, []);
 
     const [isDisabled, setisDisabled] = useState(true)
     const [userDetails, setUserDetails] = useState({

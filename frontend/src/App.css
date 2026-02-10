@@ -11,10 +11,12 @@ main, body {
 
 main {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-end;
     justify-content: center;
     padding: 10px;
     position: relative;
+    width: 100%;
 }
 
 
@@ -301,6 +303,8 @@ main.main-layout {
     background-color: #fbfaf8;
     margin-top: 50px;
     margin-left: 0%;
+    display: flex;
+
 }
 
 main.main-layout .functionality .solid {
@@ -361,9 +365,9 @@ main .top-bar .greeting h1 {
 main .overview {
     display: flex;
     justify-content: space-evenly;
-    width: 100%;
     margin-top: 20px;
-    gap: 100px;
+    /* gap: 100px; */
+    width: 100%;
 }
 
 main .overview div {
@@ -567,6 +571,67 @@ main.settings form label {
 
 main.reports .solid {
     box-shadow: 0px 1px 3px 1px #000;
+}
+
+.charts {
+    display: flex;
+    margin: 40px 0;
+    /* flex-direction: column; */
+    /* align-items: center; */
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.chart {
+    min-width: 500px;
+    height: 500px;
+    padding: 10px;
+    cursor: pointer;
+    padding: 30px 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    box-shadow: 0px 0px 5px 1px black;
+    margin: 20px;
+}
+
+.chart p {
+    text-align: center;
+}
+
+.chart.bar {
+    width: 100%;
+}
+
+.chart.pie {
+    width: 45px;
+}
+
+.chart h1 {
+    font-size: 22.5px;
+    text-align: center;
+}
+
+main .dashboard {
+    display: flex;
+    flex-direction: column;
+    max-width: 80vw;
+    /* align-items: center; */
+}
+
+main.reports {
+    align-items: center;
+    justify-content: center;
+    max-width: 80vw;
+}
+
+main.reports .charts {
+    justify-content: flex-start;
+}
+
+main.settings {
+    max-width: 80vw;
 }
 
 main .left-bar .top-bar .overview .number .inventory-options .product-grid {

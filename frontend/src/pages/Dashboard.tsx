@@ -1,12 +1,16 @@
 import { useSelector } from "react-redux"
 import { Button } from "../components/Button"
 import { useDispatch } from "react-redux"
-import { setHeading } from "../store/authstore"
+import { setHeading } from "../store/store"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { error } from "console"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
+
+import { BarChartComponent } from "../components/BarChart"
+import { PieChartComponent } from "../components/PieChart"
+import { LineChartComponent } from "../components/LineChart"
 
 export const Dashboard = () => {
     const [productCount, setProductCount] = useState(0)
@@ -23,7 +27,8 @@ export const Dashboard = () => {
     const navigate = useNavigate()
     useEffect(() => {
         dispatch(setHeading({
-            heading: "Dashboard"
+            heading: "Dashboard",
+            message: "View an overview of your inventory"
         }));
     }, [dispatch]);
     const company_reg_no = useMemo(() => {
@@ -104,7 +109,7 @@ export const Dashboard = () => {
         <main className="dashboard main-layout">
             <section className="overview">
                 <div className="total-products">
-                    <h2>Total Products</h2>
+                    <h2>Total Units</h2>
                     <p className="number">{productCount}</p>
                     <p className="comment">accross {categoriesCount} categories</p>
                 </div>
@@ -116,12 +121,26 @@ export const Dashboard = () => {
                 <div className="recent-sales">
                     <h2>Recent Sales</h2>
                     <p className="number">£{recentSales}</p>
-                    <p className="comment">in the {timePeriod} days</p>
+                    <p className="comment">in the last {timePeriod} days</p>
                 </div>
                 <div className="best-seller">
                     <h2>Best Seller</h2>
                     <p className="text">{bestSeller? bestSeller.product_name: "null"}</p>
                     <p className="comment">{bestSeller && bestSeller.total_quantity} items sold</p>
+                </div>
+            </section>
+            <section className="charts">
+                <div className="line chart">
+                    <h1>Sale Daily Trend</h1>
+                    <LineChartComponent />
+                </div>
+                <div className="pie chart">
+                    <h1>Stock Categories</h1>
+                    <PieChartComponent />
+                </div>
+                <div className="bar chart">
+                    <h1>Stock Levels by Category</h1>
+                    <BarChartComponent />
                 </div>
             </section>
         </main>

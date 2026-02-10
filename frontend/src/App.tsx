@@ -14,7 +14,7 @@ import { Settings } from './pages/Settings';
 import { Reports } from './pages/Reports';
 
 import { Provider } from 'react-redux';
-import { store } from './store/authstore';
+import { store } from './store/store';
 import { CounterSale } from './pages/CounterSale';
 
 function App() {

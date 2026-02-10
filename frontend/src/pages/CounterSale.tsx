@@ -3,7 +3,7 @@ import { Button } from "../components/Button"
 import axios from "axios"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { setHeading } from "../store/authstore"
+import { setHeading } from "../store/store"
 import { Modal } from "../components/Modal"
 import { ConfirmDialog } from "../components/ConfirmDialog"
 
@@ -34,16 +34,18 @@ export const CounterSale = () => {
     const navigate = useNavigate()
     useEffect(() => {
         dispatch(setHeading({
-            heading: "Counter Sale"
+            heading: "Counter Sale",
+            message: "Make sales over the counter"
         }));
     }, [dispatch]);
-    const savedUser = localStorage.getItem('user')
-    let company_reg_no = ""
-    let user_id= ""
-    if (savedUser) {
-        company_reg_no = JSON.parse(savedUser)['company_reg_no']
-        user_id = JSON.parse(savedUser)['user_id']
-    }
+    const company_reg_no = useMemo(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser).company_reg_no : "";
+    }, []);
+    const user_id = useMemo(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser).user_id : "";
+    }, []);
 
     const [search, setSearch] = useState("")
     const [cart, setCart] = useState<CartMap>({});

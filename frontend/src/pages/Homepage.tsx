@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { login } from "../store/authstore";
+import { login } from "../store/store";
 import { useDispatch } from "react-redux";
 
 export const Home = () => {

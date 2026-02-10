@@ -25,11 +25,15 @@ const userSlice = createSlice({
 
 const headingSlice = createSlice({
     name: "heading",
-    initialState: {value: {heading: "Homepage"}},
+    initialState: {value: {
+        heading: "Homepage",
+        message: "Manage your stock inventory here"
+    }},
     reducers: {
         setHeading: (state, action)=> {
-            const {heading} = action.payload
+            const {heading, message} = action.payload
             state.value.heading = heading
+            state.value.message = message
         }
     }
 })

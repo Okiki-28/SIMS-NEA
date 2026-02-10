@@ -7,7 +7,7 @@ import { useState } from "react";
 import axios from "axios";
 
 import { useDispatch } from "react-redux";
-import { login } from "../store/authstore";
+import { login } from "../store/store";
 
 export const Login = () => {
     

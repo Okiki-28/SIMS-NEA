@@ -1,5 +1,5 @@
 import { Button } from "../components/Button";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Modal } from "../components/Modal";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -10,14 +10,20 @@ export const Navbar = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
 
-    const savedUser = localStorage.getItem('user')
-    let user 
-    let company_reg_no
-    if (savedUser) {   
-        user = JSON.parse(savedUser)['username']
-        company_reg_no = JSON.parse(savedUser)['company_reg_no']
-    }
+    const company_reg_no = useMemo(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser).company_reg_no : "";
+    }, []);
+    const user_id = useMemo(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser).user_id : "";
+    }, []);
+    const user = useMemo(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser).username : "";
+    }, []);
     let pageHeading = useSelector((state: any) => state.heading.value.heading)
+    let message = useSelector((state: any) => state.heading.value.message)
     const closeModal = () => {
         setIsActive(false)
     }
@@ -62,7 +68,7 @@ export const Navbar = () => {
         <section className="top-bar">
             <div className="greeting">
                 <h1>{pageHeading}</h1>
-                <p>Welcome {user}, Manage your stock inventory here</p> 
+                <p>Welcome {user}, {message}</p> 
             </div>
             <div className="functionality">
                 <Button onclick={addProduct}>Add Products +</Button>
