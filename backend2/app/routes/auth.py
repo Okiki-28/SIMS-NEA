@@ -112,12 +112,29 @@ def register_existing():
     security_question = data.get("security_question")
     security_response = data.get("security_response")
 
+    # if not company_reg_no:
+    #     return ok(data={"missing": "company_reg_no"})
+    # elif not user_first_name:
+    #     return ok(data={"missing": "user_first_name"})
+    # elif not user_last_name:
+    #     return ok(data={"missing": "user_last_name"})
+    # elif not user_email:
+    #     return ok(data={"missing": "user_email"})
+    # elif not user_password:
+    #     return ok(data={"missing": "user_password"})
+    # elif not user_confirm_password:
+    #     return ok(data={"missing": "user_confirm_password"})
+    # elif not security_question:
+    #     return ok(data={"missing": "security_question"})
+    # elif not security_response:
+    #     return ok(data={"missing": "security_response"})
+    
     if not all([company_reg_no, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response]):
         return fail(details="Complete all required fields in form")
-    elif not user_password == user_confirm_password:
+    if not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
     
-    company = Company.query.filter_by(reg_no = company_reg_no).first()  
+    company = Company.query.filter_by(reg_no = company_reg_no).first()
     if not company:
         return fail(details=f"Company with registration number '{company_reg_no}' not found")
     
@@ -140,8 +157,7 @@ def register_existing():
         security_response = security_response
     )
 
-    company.size += 1
-
+    company.size += (company.size or 0) + 1
     db.session.add(user)
     db.session.commit()
 
