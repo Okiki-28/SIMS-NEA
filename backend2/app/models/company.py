@@ -29,7 +29,9 @@ class Company(db.Model):
         db.String(20)
     )
     size = db.Column(
-        db.Integer
+        db.Integer,
+        Nullable=False,
+        default=0
     )
     threshold = db.Column(
         Numeric(3, 1),
