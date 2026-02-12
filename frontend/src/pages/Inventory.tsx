@@ -1,11 +1,11 @@
 import { Button } from "../components/Button";
 import { Modal } from "../components/Modal";
 import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setHeading } from "../store/store";
 import { data, Link, useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "../components/ConfirmDialog";
+import api from "../api/client";
 
 export const Inventory = () => {
     const dispatch = useDispatch()
@@ -98,7 +98,7 @@ export const Inventory = () => {
         console.log(formData)
         try {
             console.log(formData)
-            const response = await axios.post(`http://127.0.0.1:5000/api/suppliers/add`, formData, { withCredentials: true });
+            const response = await api.post("/api/suppliers/add", formData, { withCredentials: true });
             const data = response.data
             console.log(data)
         } catch {
@@ -124,7 +124,7 @@ export const Inventory = () => {
         
         try {
             console.log(formData)
-            const response = await axios.post(`http://127.0.0.1:5000/api/categories/add`, formData, { withCredentials: true });
+            const response = await api.post("/api/categories/add", formData, { withCredentials: true });
             const data = response.data
             console.log(data)
         } catch {
@@ -141,7 +141,7 @@ export const Inventory = () => {
         }
         const getProductDetails = async () => {
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/products/get", data)
+                const response = await api.post("/api/products/get", data)
                 console.log(response.data)
                 setModalData(response.data)
                 return response.data
@@ -161,7 +161,7 @@ export const Inventory = () => {
                 "company_reg_no": company_reg_no
             }
             try {
-                const response = await axios.delete(`http://127.0.0.1:5000/api/products/${prod_id}`, {data: payload})
+                const response = await api.delete(`/api/products/${prod_id}`, {data: payload})
                 setIsDialogActive(false)
                 navigate(0)
                 return response.data
@@ -184,7 +184,7 @@ export const Inventory = () => {
         }
         const getProductDetails = async () => {
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/products/get", data);
+                const response = await api.post("/api/products/get", data);
                 console.log(response.data, "meee")
                 setModalData(response.data)
                 return response.data
@@ -206,7 +206,7 @@ export const Inventory = () => {
         
         try {
             console.log(formData)
-            const response = await axios.post(`http://127.0.0.1:5000/api/products/edit`, formData, { withCredentials: true });
+            const response = await api.post("/api/products/edit", formData, { withCredentials: true });
             const data = response.data
             setError(data)
             console.log(data)
@@ -223,7 +223,7 @@ export const Inventory = () => {
                     "company_reg_no": company_reg_no,
                     "user_id": user_id
                 }
-                const response = await axios.post("http://127.0.0.1:5000/api/products/get-all", data)
+                const response = await api.post("/api/products/get-all", data)
                 console.log(response.data, company_reg_no)
                 setAll_products(response.data)
             } catch {
@@ -236,7 +236,7 @@ export const Inventory = () => {
                     "company_reg_no": company_reg_no,
                     "user_id": user_id
                 }
-                const response = await axios.post("http://127.0.0.1:5000/api/suppliers", data)
+                const response = await api.post("/api/suppliers", data)
                 setAll_suppliers(response.data)
             } catch {
                 console.log("Failed to fetch Categories error")
@@ -248,7 +248,7 @@ export const Inventory = () => {
                     "company_reg_no": company_reg_no,
                     "user_id": user_id
                 }
-                const response = await axios.post("http://127.0.0.1:5000/api/categories", data)
+                const response = await api.post("/api/categories", data)
                 setAll_categories(response.data)
             } catch {
                 console.log("Failed to fetch Categories error")

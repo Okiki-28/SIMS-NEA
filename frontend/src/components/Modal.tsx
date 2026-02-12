@@ -1,7 +1,6 @@
-import axios from "axios"
 import { Button, ButtonType } from "./Button"
 import React, { useEffect, useMemo, useState } from "react"
-
+import api from "../api/client"
 
 export const Modal = ({heading="Modal", purpose="product", data, isActive, onClose, isModalForm, handleSubmit}: any) => {
     
@@ -100,7 +99,7 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
                     "user_id": user_id,
                     "company_reg_no": company_reg_no
                 }
-                const response = await axios.post("http://127.0.0.1:5000/api/categories", data)
+                const response = await api.post("/api/categories", data)
                 setAll_categories(response.data)
             } catch {
                 console.log("Failed to fetch Categories error")
@@ -112,7 +111,7 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
                     "user_id": user_id,
                     "company_reg_no": company_reg_no
                 }
-                const response = await axios.post("http://127.0.0.1:5000/api/suppliers", data)
+                const response = await api.post("/api/suppliers", data)
                 setAll_suppliers(response.data)
             } catch {
                 console.log("Failed to fetch Categories error")

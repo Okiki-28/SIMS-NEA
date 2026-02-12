@@ -7,7 +7,7 @@ import { Button } from "../components/Button";
 import { LineChartComponent } from "../components/LineChart";
 import { BarChartComponent } from "../components/BarChart";
 import { PieChartComponent } from "../components/PieChart";
-import axios from "axios";
+import api from "../api/client";
 
 import { PieChart, Pie, Tooltip, Legend, Bar, ResponsiveContainer } from "recharts"
 
@@ -44,7 +44,7 @@ export const Reports = () => {
         }
         const fetchCategoriesInfo = async () => {
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/reports/supplier-sale", payload)
+                const response = await api.post("/api/reports/supplier-sale", payload)
                 const data = response.data
                 console.log(data)
                 setChartData(data)
@@ -57,7 +57,7 @@ export const Reports = () => {
         fetchCategoriesInfo()
         const fetchSuppliersInfo = async () => {
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/reports/category-sale", payload)
+                const response = await api.post("/api/reports/category-sale", payload)
                 const data = response.data
                 console.log(data)
                 setChartData1(data)

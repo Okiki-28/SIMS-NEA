@@ -1,6 +1,6 @@
-import axios from "axios"
 import { useEffect, useMemo, useState } from "react"
 import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, ResponsiveContainer } from "recharts"
+import { api } from "../api/client"
 
 type categoryInfo = {
     name: string,
@@ -25,7 +25,7 @@ export const BarChartComponent = () => {
         }
         const fetchCategoriesInfo = async () => {
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/reports/bar-chart", payload)
+                const response = await api.post("/api/reports/bar-chart", payload)
                 const data = response.data
                 console.log(data)
                 setCategoriesInfo(data)

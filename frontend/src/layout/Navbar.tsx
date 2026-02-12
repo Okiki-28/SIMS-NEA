@@ -2,7 +2,7 @@ import { Button } from "../components/Button";
 import React, { useMemo, useState } from "react";
 import { Modal } from "../components/Modal";
 import { useSelector } from "react-redux";
-import axios from "axios";
+import api from "../api/client";
 
 
 export const Navbar = () => {
@@ -55,7 +55,7 @@ export const Navbar = () => {
         console.log(formData)
         try {
             console.log(formData)
-            const response = await axios.post(`http://127.0.0.1:5000/api/products/add`, formData, { withCredentials: true });
+            const response = await api.post("/api/products/add", formData, { withCredentials: true });
             const data = response.data
             console.log(data)
         } catch {

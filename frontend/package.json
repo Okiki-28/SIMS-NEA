@@ -1,7 +1,7 @@
 {
   "name": "sims",
   "version": "0.1.0",
-  "homepage": "https://okiki-28.github.io/SIMS-NEA",
+  "homepage": "https://okiki-28.github.io/",
   "private": true,
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

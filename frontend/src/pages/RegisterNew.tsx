@@ -2,7 +2,7 @@ import { Button } from "../components/Button";
 import { ButtonType } from "../components/Button";
 import { Link } from "react-router-dom";
 
-import axios from "axios";
+import api from "../api/client";
 import { useState, } from "react";
 
 import { useNavigate } from "react-router-dom";
@@ -47,7 +47,7 @@ export const RegisterNew = () => {
         setError("")
         setIsLoading(true)
         try {
-            axios.post(BASE_URL+"/register-new", formData)
+            api.post("/api/register-new", formData)
             navigate("/login")
         } catch(err:any) {
             console.log("Login error:", err?.response?.status);
@@ -56,7 +56,7 @@ export const RegisterNew = () => {
     }
 
     return (
-        <main>
+        <main className="standalone-main">
             <section className="standalone register new">
                 <div className="greeting">
                     <h1>Register</h1>

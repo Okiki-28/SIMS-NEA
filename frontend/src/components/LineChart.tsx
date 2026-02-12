@@ -1,6 +1,7 @@
-import axios from "axios"
+
 import { useEffect, useMemo, useState } from "react"
 import { LineChart, XAxis, Tooltip, YAxis, Line, ResponsiveContainer, Legend } from "recharts"
+import { api } from "../api/client"
 
 type categoryInfo = {
     date: string
@@ -25,7 +26,7 @@ export const LineChartComponent = () => {
         }
         const fetchCategoriesInfo = async () => {
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/reports/line-chart", payload)
+                const response = await api.post("/api/reports/line-chart", payload)
                 const data = response.data
                 console.log(data)
                 setSalesData(data)

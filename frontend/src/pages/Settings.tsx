@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "../components/Button";
-import axios from "axios";
+import api from "../api/client";
 
 
 export const Settings = () => {
@@ -52,8 +52,8 @@ export const Settings = () => {
         const fetchDetails = async () => {
             try {
                 const [userResponse, companyResponse] = await Promise.all([
-                    axios.post("http://127.0.0.1:5000/api/users", payload),
-                    axios.post("http://127.0.0.1:5000/api/companies", payload)
+                    api.post("/api/users", payload),
+                    api.post("/api/companies", payload)
                 ]);
                 
                 console.log(userResponse.data, companyResponse.data);
@@ -86,7 +86,7 @@ export const Settings = () => {
         console.log(formData)
 
         try {
-            const response = await axios.post(`http://127.0.0.1:5000/api/users/edit`, formData, { withCredentials: true });
+            const response = await api.post("/api/users/edit", formData, { withCredentials: true });
             const data = response.data
             console.log(data)
             alert()

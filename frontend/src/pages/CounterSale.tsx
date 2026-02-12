@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button } from "../components/Button"
-import axios from "axios"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { setHeading } from "../store/store"
 import { Modal } from "../components/Modal"
 import { ConfirmDialog } from "../components/ConfirmDialog"
+import api from "../api/client"
 
 type CartItem = {
   product_id: number;
@@ -90,7 +90,7 @@ export const CounterSale = () => {
         }
         const getProductDetails = async () => {
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/products/get", data)
+                const response = await api.post("/api/products/get", data)
                 console.log(response.data)
                 setModalData(response.data)
                 return response.data
@@ -155,7 +155,7 @@ export const CounterSale = () => {
                     "company_reg_no": company_reg_no,
                     "user_id": user_id
                 }
-                const response = await axios.post("http://127.0.0.1:5000/api/products/get-all", data)
+                const response = await api.post("/api/products/get-all", data)
                 console.log(response.data, company_reg_no)
                 setAll_products(response.data)
             } catch {
@@ -171,7 +171,7 @@ export const CounterSale = () => {
                     "user_id": user_id,
                     "cart": cart_of_id
                 }
-                const response = await axios.post("http://127.0.0.1:5000/api/products/get-some", data)
+                const response = await api.post("/api/products/get-some", data)
                 console.log(response.data, company_reg_no)
                 setAddedProducts(response.data)
             } catch {
@@ -202,7 +202,7 @@ export const CounterSale = () => {
             }
             console.log(data)
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/sales/add", data)
+                const response = await api.post("/api/sales/add", data)
                 console.log(response.data)
                 navigate(0)
                 return response.data

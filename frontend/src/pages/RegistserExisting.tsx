@@ -1,13 +1,12 @@
 import { useState } from "react"
-import axios from "axios"
 import { Button } from "../components/Button"
 import { ButtonType } from "../components/Button"
 import { useNavigate } from "react-router-dom"
+import api from "../api/client"
 
 export const RegisterExisting = () => {
 
     const navigate = useNavigate()
-    const BASE_URL = "http://127.0.0.1:5000/api/auth"
 
     const [formData, setFormData] = useState({
         company_reg_no: "",
@@ -33,7 +32,7 @@ export const RegisterExisting = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post(`${BASE_URL}/register-existing`, formData);
+            const response = await api.post("/api/register-existing", formData);
             const data= response.data
             console.log("OK:", data);
             navigate("/login")
@@ -43,7 +42,7 @@ export const RegisterExisting = () => {
     };
 
     return (
-        <main>
+        <main className="standalone-main">
             <section className="standalone register existing">
                 <div className="greeting">
                     <h1>Register</h1>

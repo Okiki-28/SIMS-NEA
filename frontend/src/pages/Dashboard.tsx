@@ -3,7 +3,6 @@ import { Button } from "../components/Button"
 import { useDispatch } from "react-redux"
 import { setHeading } from "../store/store"
 import { useEffect, useState } from "react"
-import axios from "axios"
 import { error } from "console"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
@@ -11,6 +10,8 @@ import { useMemo } from "react"
 import { BarChartComponent } from "../components/BarChart"
 import { PieChartComponent } from "../components/PieChart"
 import { LineChartComponent } from "../components/LineChart"
+import { api } from "../api/client"
+
 
 export const Dashboard = () => {
     const [productCount, setProductCount] = useState(0)
@@ -46,7 +47,7 @@ export const Dashboard = () => {
                 "user_id": user_id
             }
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/products/get-total-count", payload)
+                const response = await api.post("/api/products/get-total-count", payload)
                 console.log(response.data)
                 setProductCount(response.data.product_count)
                 setCategoriesCount(response.data.categories_count)
@@ -61,7 +62,7 @@ export const Dashboard = () => {
                 "user_id": user_id
             }
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/products/get-low-stock-count", payload)
+                const response = await api.post("/api/products/get-low-stock-count", payload)
                 setLowStockCount(response.data.low_stock_count)
                 setIndividualProductCount(response.data.product_count)
                 return response.data.low_stock_count
@@ -75,7 +76,7 @@ export const Dashboard = () => {
                 "user_id": user_id
             }
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/sales/get-recent-sales", payload)
+                const response = await api.post("/api/sales/get-recent-sales", payload)
                 console.log(response.data)
                 setRecentSales(response.data.total_sales)
                 setTimePeriod(response.data.time_period)
@@ -90,7 +91,7 @@ export const Dashboard = () => {
                 "user_id": user_id
             }
             try {
-                const response = await axios.post("http://127.0.0.1:5000/api/sales/get-best-seller", payload)
+                const response = await api.post("/api/sales/get-best-seller", payload)
                 console.log(response.data)
                 setBestSeller(response.data.best_seller)
                 return response.data.best_seller

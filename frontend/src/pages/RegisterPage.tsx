@@ -15,7 +15,7 @@ export const Register = () => {
         }
     }, [])
     return (
-        <main>
+        <main className="standalone-main">
             <section className="standalone">
                 <div className="greeting">
                     <h1>Register</h1>
