@@ -47,7 +47,7 @@ export const RegisterNew = () => {
         setError("")
         setIsLoading(true)
         try {
-            api.post("/api/register-new", formData)
+            api.post("/api/auth/register-new", formData)
             navigate("/login")
         } catch(err:any) {
             console.log("Login error:", err?.response?.status);

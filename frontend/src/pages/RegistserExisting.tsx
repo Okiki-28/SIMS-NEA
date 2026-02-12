@@ -32,7 +32,7 @@ export const RegisterExisting = () => {
         e.preventDefault();
 
         try {
-            const response = await api.post("/api/register-existing", formData);
+            const response = await api.post("/api/auth/register-existing", formData);
             const data= response.data
             console.log("OK:", data);
             navigate("/login")

@@ -10,8 +10,6 @@ import { login } from "../store/store";
 import api from "../api/client";
 
 export const Login = () => {
-    
-    const BASE_URL = "http://127.0.0.1:5000/api/auth"
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -42,7 +40,7 @@ export const Login = () => {
 
         try {
             console.log(123)
-            const response = await api.post("/api/login", formData);
+            const response = await api.post("/api/auth/login", formData);
             const data = response.data
             console.log(response.data)
             localStorage.clear()
