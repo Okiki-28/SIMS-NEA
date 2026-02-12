@@ -94,6 +94,7 @@ def edit_user():
     company.tax_id = payload.get("company_tax", company.tax_id)
     company.threshold = payload.get("company_threshold", company.threshold)
     company.time_period = payload.get("company_report_time_period", company.time_period)
+    company.size = payload.get("company_size", company.size)
 
     db.session.commit()
 
