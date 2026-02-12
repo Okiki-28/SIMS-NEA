@@ -117,7 +117,7 @@ def register_existing():
     elif not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
     
-    company = db.session.query(Company.reg_no).filter(Company.reg_no == company_reg_no).first()  
+    company = Company.query.filter_by(reg_no = company_reg_no).first()  
     if not company:
         return fail(details=f"Company with registration number '{company_reg_no}' not found")
     
