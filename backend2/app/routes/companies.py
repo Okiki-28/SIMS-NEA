@@ -5,6 +5,8 @@ from flask import Blueprint, jsonify, request
 from app.utils.fail import fail
 from app.utils.validate_user import validate_user
 
+from app.routes.logs import add_log
+
 company_bp = Blueprint("company", __name__, url_prefix="/api/companies")
 
 @company_bp.route("", methods=["GET"])

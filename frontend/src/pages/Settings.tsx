@@ -5,7 +5,13 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "../components/Button";
 import api from "../api/client";
+import { couldStartTrivia } from "typescript";
 
+type staffInfo = {
+    user_id: Number
+    name: string
+    role: String
+}
 
 export const Settings = () => {
     const dispatch = useDispatch()
@@ -24,7 +30,10 @@ export const Settings = () => {
         const savedUser = localStorage.getItem("user");
         return savedUser ? JSON.parse(savedUser).user_id : "";
     }, []);
-
+    const role = useMemo(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser).role : "";
+    }, []);
     const [isDisabled, setisDisabled] = useState(true)
     const [userDetails, setUserDetails] = useState({
         user_id: user_id,
@@ -43,6 +52,7 @@ export const Settings = () => {
         user_tel: "",
         user_password: ""
     })
+    const [allStaff, setAllStaff] = useState<staffInfo[]>()
     useEffect(() => {
         const payload = {
             "user_id": user_id,
@@ -69,6 +79,19 @@ export const Settings = () => {
                 console.log("Unable to fetch details", error);
             }
         }
+
+        const fetchStaffInfo =async () => {
+            try {
+                const staffResponse = await api.post("/api/users/all", payload)
+
+                console.log(staffResponse.data)
+                setAllStaff(staffResponse.data)
+            } catch {
+                console.log("Failed to get other staff")
+            }
+        }
+
+        role === "admin" && fetchStaffInfo()
         
         fetchDetails();
     }, [user_id, company_reg_no]);
@@ -89,7 +112,6 @@ export const Settings = () => {
             const response = await api.post("/api/users/edit", formData, { withCredentials: true });
             const data = response.data
             console.log(data)
-            alert()
             navigate(0)
             return data
         } catch {
@@ -136,14 +158,15 @@ export const Settings = () => {
                     </div>}
                 </form>
             </div>
-            <div className="company-info">
+            {role === "admin" && (
+            <><div className="company-info">
                 <div className="header">
                     <h1>Company Information</h1>
                 </div>
             </div>
                 <form>
                     <div>
-                        <label htmlFor="company_Reg_no">Company Name: </label>
+                        <label htmlFor="company_Reg_no">Company Reg no: </label>
                         <input type="text" id="company_Reg_no" name="company_Reg_no" onChange={handleChange} value={company_reg_no} disabled={isDisabled}/>
                     </div>
                     <div>
@@ -183,15 +206,31 @@ export const Settings = () => {
                             <option value="3650">All time</option> {/* 10 years */}
                         </select>
                     </div>
-                </form>
-            {
-            isDisabled? 
+                </form></>)}
+                {role === "admin" && <>
+                <div className="user-info">
+                    <h1>Other Staff</h1>
+                </div>
+                <form>
+                    {allStaff?.map((staff)=>{
+                        return (
+                        <div key={staff.name}>
+                            <label htmlFor={"staff"+staff.name} className={staff.user_id == user_id? "current-user": ""}>{staff.name}:</label>
+                            <input 
+                            type="text" 
+                            id={"staff"+staff.name} 
+                            name={"staff"+staff.name} 
+                            value={staff.role.charAt(0).toUpperCase() + staff.role.slice(1).toLowerCase()} 
+                            disabled={true}/>
+                        </div>
+                    )})}
+                </form></>}
+            {isDisabled? 
             <Button onclick={()=>{setisDisabled(false)}}>Edit Details</Button>: 
             <div>
             <Button onclick={() => saveDetails(userDetails)}>Save</Button>
             <Button onclick={()=>{setisDisabled(true); navigate(0)}}>Cancel</Button>
-            </div>
-            }
+            </div>}
         </main>
     )
 }

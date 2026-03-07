@@ -3,12 +3,15 @@ from app import db
 from flask import Blueprint, jsonify, request, session
 from app.models.user import User
 from app.models.company import Company
-from app.models.enum import UserRole, SecurityQuestion
+from app.models.enum import UserRole
 
 from app.utils.hash_password import hash_password
+from app.utils.hash_security_response import hash_security_response
 from app.utils.company_reg_no_generator import generate_Company_reg_no
 from app.utils.ok import ok
 from app.utils.fail import fail
+
+from app.routes.logs import add_log
 
 import os
 import hmac
@@ -38,10 +41,10 @@ def register_new():
     user_confirm_password = data.get("user_confirm_password")
 
     security_question = data.get("security_question")
-    security_response = data.get("security_response")
+    security_response_hex = data.get("security_response")
 
     
-    if not all([company_name, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response]):
+    if not all([company_name, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response_hex]):
         return fail(details="Complete all required fields in form")
     elif not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
@@ -76,15 +79,11 @@ def register_new():
         role = UserRole.Admin.value,
         company_reg_no = company.reg_no,
         security_question = security_question,
-        security_response = security_response
+        security_response_hex = security_response_hex
     )
 
     db.session.add(user)
     db.session.commit()
-
-    session['user_id'] = user.id
-    session['first_name'] = user.first_name
-    session['company_reg_no'] = user.company_reg_no
 
     data = {
         'user_id': user.id,
@@ -92,6 +91,32 @@ def register_new():
         'company_reg_no': user.company_reg_no,
         'loggedIn': True
     }
+
+    log_user_data = {
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "tel": user.tel,
+        "role": user.role,
+    }
+
+    log_company_data = {
+        "reg_no": company.reg_no,
+        "name": company.name,
+        "address": company.address,
+        "phone": company.phone,
+        "tax_id": company.tax_id,
+        "size": company.size,
+    }
+
+    add_log (
+        action="ADD",
+        message=f"Registered new company with name '{company_name}' and added new user to database",
+        company_reg_no=company.reg_no,
+        user_id=user.id,
+        user_data=log_user_data,
+        company_data=log_company_data
+    )
 
     return data
 
@@ -110,26 +135,9 @@ def register_existing():
     user_confirm_password = data.get("user_confirm_password")
 
     security_question = data.get("security_question")
-    security_response = data.get("security_response")
+    security_response_hex = data.get("security_response")
 
-    # if not company_reg_no:
-    #     return ok(data={"missing": "company_reg_no"})
-    # elif not user_first_name:
-    #     return ok(data={"missing": "user_first_name"})
-    # elif not user_last_name:
-    #     return ok(data={"missing": "user_last_name"})
-    # elif not user_email:
-    #     return ok(data={"missing": "user_email"})
-    # elif not user_password:
-    #     return ok(data={"missing": "user_password"})
-    # elif not user_confirm_password:
-    #     return ok(data={"missing": "user_confirm_password"})
-    # elif not security_question:
-    #     return ok(data={"missing": "security_question"})
-    # elif not security_response:
-    #     return ok(data={"missing": "security_response"})
-    
-    if not all([company_reg_no, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response]):
+    if not all([company_reg_no, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response_hex]):
         return fail(details="Complete all required fields in form")
     if not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
@@ -138,8 +146,6 @@ def register_existing():
     if not company:
         return fail(details=f"Company with registration number '{company_reg_no}' not found")
     
-    
-
     salt = os.urandom(16)
     salt_hex = salt.hex()
     password_hash = hash_password(user_password, salt)
@@ -154,7 +160,7 @@ def register_existing():
         role = user_role.lower(),
         company_reg_no = company_reg_no,
         security_question = security_question,
-        security_response = security_response
+        security_response_hex = security_response_hex
     )
 
     company.size += (company.size or 0) + 1
@@ -172,33 +178,27 @@ def register_existing():
         'loggedIn': True
     }
 
+    log_user_data = {
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "tel": user.tel,
+        "role": user.role,
+    }    
+
+    add_log (
+        action="ADD",
+        message=f"Added new user to company database",
+        company_reg_no=company.reg_no,
+        user_id=user.id,
+        user_data=log_user_data
+    )
+
     return data
-
-    import traceback
-    from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-
-    try:
-        db.session.add(user)          # and company if needed
-        db.session.commit()
-        return ok(data="committed")
-    except IntegrityError as e:
-        db.session.rollback()
-        traceback.print_exc()
-        return fail(error="IntegrityError", status=400, details=str(e.orig))
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        traceback.print_exc()
-        return fail(error="SQLAlchemyError", status=500, details=str(e))
-    except Exception as e:
-        db.session.rollback()
-        traceback.print_exc()
-        return fail(error="Exception", status=500, details=str(e))
-
-    return ok(data=f"{user.first_name} has been registered with company with registration Number: {company_reg_no}, user id: {user.id}")
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
-    data = request.get_json() or {}
+    data = request.get_json() 
 
     email = data.get("email").lower()
     password = data.get("password")
@@ -223,24 +223,90 @@ def login():
         'user_id': user.id,
         'username': user.first_name,
         'company_reg_no': user.company_reg_no,
+        'role': user.role,
         'loggedIn': True
     }
+
+    add_log (
+        action="AUTH",
+        message=f"User '{user.first_name} {user.last_name}' logged in to system",
+        company_reg_no=user.company_reg_no,
+        user_id=user.id,
+    )
     
+    return data
+
+@auth_bp.route("/recover/password", methods=["POST"])
+def change_password():
+    payload = request.get_json()
+
+    email = payload.get("email")
+    password = payload.get("password")
+    confirm_password = payload.get("confirm_password")
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return fail()
+
+    if password != confirm_password:
+        return fail("Passwords don't match")
+    
+    salt = bytes.fromhex(user.salt_hex)
+    password_hash = hash_password(password, salt)
+
+    user.password_hash = password_hash
+
+    add_log (
+        action="AUTH",
+        message=f"User '{user.first_name} {user.last_name}' resetted their password",
+        company_reg_no=user.company_reg_no,
+        user_id=user.id
+    )
+
+    return ok()
+
+@auth_bp.route("/recover/security", methods=["POST"])
+def confirm_identity():
+    payload = request.get_json()
+
+    email = payload.get("email")
+    security_response = payload.get("security-response")
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return fail()
+    
+    salt = bytes.fromhex(user.security_response_salt_hex)
+    calculated_hash = hash_security_response(security_response, salt)
+
+    if not hmac.compare_digest(calculated_hash, user.security_response):
+        return fail(details="Invalid email or password")
+    else:
+        return ok()
+    
+
+@auth_bp.route("/recover/question", methods=["POST"])
+def get_Security_question():
+    payload = request.get_json()
+
+    email = payload.get("email")
+    
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return fail()
+    security_question = user.security_question
+
+    data = {
+        "security_question": security_question
+    }
+
     return data
 
 @auth_bp.route("/status", methods=["GET"])
 def status():
+    
     return {
         "loggedIn": 'user_id' in session,
         "user_id": session.get('user_id'),
         "first_name": session.get('first_name')
-    }
-
-@auth_bp.route("/logout", methods=["POST"])
-def logout():
-    if 'user_id' in session:
-        session.clear()
-
-    return {
-        "loggedIn": 'user_id' in session
     }

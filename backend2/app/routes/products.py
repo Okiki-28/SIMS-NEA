@@ -13,6 +13,7 @@ from app.utils.low_stock import isLowStock, isAlmostLowStock
 from app.utils.validate_user import validate_user
 
 from app.routes.categories import get_categories_count
+from app.routes.logs import add_log
 
 from sqlalchemy import func
 
@@ -70,7 +71,7 @@ def get_product():
     return data
 
 @product_bp.route("/get-some", methods=["POST"])
-def get_some_product():
+def get_some_products():
     payload = request.get_json()
     product_ids = payload.get("cart")
     company_reg_no = payload.get("company_reg_no")
@@ -181,6 +182,16 @@ def edit_product():
 
     product = Product.query.filter_by(id=product_id, company_reg_no=company_reg_no).first()
 
+    old_data = {
+        "product_name": product.name,
+        "product_description": product.description,
+        "product_quantity": product.quantity,
+        "product_unit_price": product.unit_price,
+        "product_reorder_level": product.reorder_level,
+        "product_supplier_id": product.supplier_id,
+        "product_category_id": product.category_id,
+    }
+
     product.name = payload.get("name", product.name)
     product.description = payload.get("description", product.description)
     product.quantity = payload.get("quantity", product.quantity)
@@ -190,6 +201,26 @@ def edit_product():
     product.category_id = payload.get("category_id", product.category_id)
 
     db.session.commit()
+
+    new_data = {
+        "product_name": product.name,
+        "product_description": product.description,
+        "product_quantity": product.quantity,
+        "product_unit_price": product.unit_price,
+        "product_reorder_level": product.reorder_level,
+        "product_supplier_id": product.supplier_id,
+        "product_category_id": product.category_id,
+    }
+
+    add_log (
+        action="UPDATE",
+        message=f"Updated product with id {product_id} to company database",
+        company_reg_no=company_reg_no,
+        user_id=user_id,
+        old_data=old_data,
+        new_data=new_data
+    )
+    
     return ok(message=f"{product.name} has been updated")
 
 @product_bp.route("/get-total-count", methods=["POST"])

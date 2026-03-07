@@ -120,7 +120,7 @@ export const RegisterNew = () => {
                         <div>
                             <label htmlFor="security_question">Question: </label>
                             <select id="security_question" name="security_question" onChange={handleChange}>
-                                <option value="" disabled selected>--Choose a security question--</option>
+                                <option value="" disabled>--Choose a security question--</option>
                                 <option value="mother_maiden">What is the your mother's maiden name?</option>
                                 <option value="first_pet">What is the name of your first pet?</option>
                                 <option value="first_school">What is the name of your first_school?</option>

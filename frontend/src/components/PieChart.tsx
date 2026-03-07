@@ -36,13 +36,24 @@ export const PieChartComponent = () => {
         }
         fetchCategoriesInfo()
     }, [user_id, company_reg_no, setCategoriesInfo])
+    
     const COLORS = [
-        "#22c55e",
-        "#3b82f6",
-        "#f59e0b",
-        "#ef4444",
-        "#8b5cf6",
-    ]
+    "#22c55e",
+    "#3b82f6",
+    "#f59e0b",
+    "#ef4444",
+    "#8b5cf6",
+    "#06b6d4",
+    "#ec4899",
+    "#84cc16",
+    "#f97316",
+    "#14b8a6",
+    "#eab308",
+    "#6366f1",
+    "#a855f7",
+    "#10b981",
+    "#fb7185",
+];
 
     const coloredData = categoriesInfo.map((item, index) => ({
         ...item,

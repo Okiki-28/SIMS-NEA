@@ -20,7 +20,7 @@ import { CounterSale } from './pages/CounterSale';
 function App() {
   return (
     <Provider store={store}>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
           <Routes>
             {/* Runs through the Main Layout format */}
             <Route path='/' element={<MainLayout><Home /></MainLayout>}/>

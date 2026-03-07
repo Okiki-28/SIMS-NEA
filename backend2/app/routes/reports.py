@@ -12,6 +12,8 @@ from app.utils.ok import ok
 from app.utils.fail import fail
 from app.utils.validate_user import validate_user
 
+from app.routes.logs import add_log
+
 from sqlalchemy import func, case
 
 report_bp = Blueprint("report", __name__, url_prefix="/api/reports")
@@ -27,7 +29,7 @@ def get_bar_chart_data():
     
     company = Company.query.filter_by(reg_no=company_reg_no).first()
     threshold = company.threshold + 1
-    all_categories = Category.query.all()
+    all_categories = Category.query.filter_by(company_reg_no=company_reg_no).all()
     low_stock_cond = Product.quantity <= (Product.reorder_level*threshold)
     dataList = []
     for cate in all_categories:
@@ -72,7 +74,7 @@ def get_pie_chart_info():
     if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
         return fail(details="Invalid request from unknown user")
 
-    all_categories = Category.query.all()
+    all_categories = Category.query.filter_by(company_reg_no=company_reg_no).all()
     dataList = []
     for cate in all_categories:
         value = (Product.query.filter(Product.category_id==cate.id, Product.company_reg_no==company_reg_no).count())

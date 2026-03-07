@@ -2,6 +2,13 @@ from app import db
 from app.utils.hash_password import hash_password
 from app.models.enum import UserRole, SecurityQuestion
 
+import os
+
+def generate_salt_hex(self):
+    salt = os.urandom(16)
+    salt_hex = salt.hex()
+
+    return salt_hex
 
 class User(db.Model):
 
@@ -56,9 +63,14 @@ class User(db.Model):
         db.String(50),
         nullable = False
     )
-    security_response = db.Column(
+    security_response_hex = db.Column(
         db.String(255),
         nullable = False
+    )
+    security_response_salt_hex = db.Column(
+        db.String(255),
+        nullable = False,
+        default = generate_salt_hex
     )
 
     company = db.relationship("Company", foreign_keys=[company_reg_no], backref="users")

@@ -70,12 +70,23 @@ export const Reports = () => {
         fetchSuppliersInfo()
     }, [user_id, company_reg_no, setChartData, setChartData1])
     const COLORS = [
-        "#22c55e",
-        "#3b82f6",
-        "#f59e0b",
-        "#ef4444",
-        "#8b5cf6",
-    ]
+    "#22c55e", // green
+    "#3b82f6", // blue
+    "#f59e0b", // amber
+    "#ef4444", // red
+    "#8b5cf6", // violet
+
+    "#06b6d4", // cyan
+    "#ec4899", // pink
+    "#84cc16", // lime
+    "#f97316", // orange
+    "#14b8a6", // teal
+    "#eab308", // yellow
+    "#6366f1", // indigo
+    "#a855f7", // purple
+    "#10b981", // emerald
+    "#fb7185", // rose
+];
 
     const coloredData = chartData.map((item, index) => ({
         ...item,

@@ -9,6 +9,8 @@ from app.utils.ok import ok
 from app.utils.fail import fail
 from app.utils.validate_user import validate_user
 
+from app.routes.logs import add_log
+
 supplier_bp = Blueprint("supplier", __name__, url_prefix="/api/suppliers")
 
 @supplier_bp.route("", methods=["POST"])
@@ -59,6 +61,21 @@ def add_supplier():
     db.session.add(supplier)
     db.session.commit()
 
+    data = {
+        "name": name,
+        "phone": phone,
+        "email": email,
+        "address": address
+    }
+
+    add_log (
+        action="ADD",
+        message="Added new supplier to company database",
+        company_reg_no=company_reg_no,
+        user_id=user_id,
+        info = data
+    )
+
     return ok()
 
 @supplier_bp.route("/<int:id>", methods=["DELETE"])
@@ -76,7 +93,22 @@ def delete_category(id):
     if not category:
         return fail()
     
+    data = {
+        "name": category.name,
+        "phone": category.phone,
+        "email": category.email,
+        "address": category.address
+    }
+    
     db.session.delete(category)
     db.session.commit()
+
+    add_log (
+        action="DELETE",
+        message="Deleted supplier from company database",
+        company_reg_no=company_reg_no,
+        user_id=user_id,
+        info = data
+    )
 
     return ok()

@@ -54,11 +54,11 @@ export const RegisterExisting = () => {
                         <input type="text" id="company_reg_no" name="company_reg_no" onChange={handleChange} />
                     </div>
                     <div>
-                        <label htmlFor="user_first_name">Full Name: </label>
+                        <label htmlFor="user_first_name">First Name: </label>
                         <input type="text" id="user_first_name" name="user_first_name" onChange={handleChange} placeholder="John"/>
                     </div>
                     <div>
-                        <label htmlFor="user_last_name">Full Name: </label>
+                        <label htmlFor="user_last_name">Last Name: </label>
                         <input type="text" id="user_last_name" name="user_last_name" onChange={handleChange} placeholder="Doe"/>
                     </div>
                     {/* Add dropdown menu here */}
@@ -88,8 +88,8 @@ export const RegisterExisting = () => {
                     </div>
                     <div>
                         <label htmlFor="security_question">Question: </label>
-                        <select id="security_question" name="security_question" onChange={handleChange}>
-                            <option value="" disabled selected>--Choose a security question--</option>
+                        <select id="security_question" defaultValue={""} name="security_question" onChange={handleChange}>
+                            <option value="" disabled>--Choose a security question--</option>
                             <option value="mother_maiden">What is the your mother's maiden name?</option>
                             <option value="first_pet">What is the name of your first pet?</option>
                             <option value="first_school">What is the name of your first_school?</option>

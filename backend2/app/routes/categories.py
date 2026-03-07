@@ -10,6 +10,8 @@ from app.utils.ok import ok
 from app.utils.fail import fail
 from app.utils.validate_user import validate_user
 
+from app.routes.logs import add_log
+
 category_bp = Blueprint("category", __name__, url_prefix="/api/categories")
 
 @category_bp.route("", methods=["POST"])
@@ -64,6 +66,18 @@ def add_category():
     db.session.add(category)
     db.session.commit()
 
+    data = {
+        "name": category_name
+    }
+
+    add_log (
+        action="ADD",
+        message="Added new category to company database",
+        company_reg_no=company_reg_no,
+        user_id=user_id,
+        info = data
+    )
+
     return ok()
 
 @category_bp.route("/<int:category_id>", methods=["DELETE"])
@@ -83,6 +97,13 @@ def delete_category(category_id):
     
     db.session.delete(category)
     db.session.commit()
+
+    add_log (
+        action="DELETE",
+        message=f"deleted category with name {category.name} from company database",
+        company_reg_no=company_reg_no,
+        user_id=user_id
+    )
 
     return ok()
 

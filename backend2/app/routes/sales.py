@@ -8,6 +8,7 @@ from flask import Blueprint, jsonify, request
 
 from app.routes.products import get_low_stock_count, get_total_count
 from app.routes.categories import get_categories_count
+from app.routes.logs import add_log
 
 from app.utils.fail import fail
 from app.utils.ok import ok
@@ -42,7 +43,10 @@ def add_new_sale():
     db.session.add(sale)
     db.session.flush()
 
-
+    sale_data = [{
+        "user_id": user_id,
+        "data": datetime.now()
+    }]
     for i in items:
         item = items[i]
         product_id = item["product_id"]
@@ -62,15 +66,29 @@ def add_new_sale():
             sale_price = sale_price
         )
 
+        sale_item_data = {
+            "sale_id": sale_id,
+            "product_id": product_id,
+            "quantity": quantity,
+            "sale_price": sale_price
+        }
+        sale_data.append(sale_item_data)
+
         product.quantity -= quantity
 
         db.session.add(sale_item)
 
     db.session.commit()
+
+    add_log (
+        action="ADD",
+        message="Added new supplier to company database",
+        company_reg_no=company_reg_no,
+        user_id=user_id,
+        info = sale_data
+    )
     
     return ok()
-
-
 
 @sale_bp.route("/get-recent-sales", methods=["POST"])
 def get_recent_sales_route():

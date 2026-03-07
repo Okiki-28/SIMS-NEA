@@ -1,8 +1,8 @@
-"""updated database
+"""Initial schema
 
-Revision ID: 28c7b93ed814
+Revision ID: b6cb3f428b6f
 Revises: 
-Create Date: 2026-02-07 17:51:13.488680
+Create Date: 2026-02-23 13:44:33.333233
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '28c7b93ed814'
+revision = 'b6cb3f428b6f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,7 +25,9 @@ def upgrade():
     sa.Column('address', sa.String(length=150), nullable=True),
     sa.Column('phone', sa.String(length=20), nullable=True),
     sa.Column('tax_id', sa.String(length=20), nullable=True),
-    sa.Column('size', sa.Integer(), autoincrement=True, nullable=True),
+    sa.Column('size', sa.Integer(), nullable=False),
+    sa.Column('threshold', sa.Numeric(precision=3, scale=1), nullable=True),
+    sa.Column('time_period', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('reg_no')
     )
@@ -59,11 +61,15 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('company_reg_no', sa.String(length=10), nullable=False),
     sa.Column('security_question', sa.String(length=50), nullable=False),
-    sa.Column('security_response', sa.String(length=255), nullable=False),
+    sa.Column('security_response_hex', sa.String(length=255), nullable=False),
+    sa.Column('security_response_salt_hex', sa.String(length=255), nullable=False),
     sa.ForeignKeyConstraint(['company_reg_no'], ['company.reg_no'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    sa.PrimaryKeyConstraint('id')
     )
+    with op.batch_alter_table('user', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_user_company_reg_no'), ['company_reg_no'], unique=False)
+        batch_op.create_index(batch_op.f('ix_user_email'), ['email'], unique=True)
+
     op.create_table('product',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(length=40), nullable=False),
@@ -82,10 +88,9 @@ def upgrade():
     )
     op.create_table('sale',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('no_of_items', sa.Integer(), autoincrement=True, nullable=True),
-    sa.Column('company_reg_no', sa.String(length=10), nullable=True),
-    sa.Column('date', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('company_reg_no', sa.String(length=10), nullable=False),
+    sa.Column('date', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['company_reg_no'], ['company.reg_no'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -109,6 +114,10 @@ def downgrade():
     op.drop_table('sale_item')
     op.drop_table('sale')
     op.drop_table('product')
+    with op.batch_alter_table('user', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_user_email'))
+        batch_op.drop_index(batch_op.f('ix_user_company_reg_no'))
+
     op.drop_table('user')
     op.drop_table('supplier')
     op.drop_table('category')
