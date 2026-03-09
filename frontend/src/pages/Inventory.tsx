@@ -30,8 +30,10 @@ export const Inventory = () => {
         "category": "",
         "quantity": -1,
         "unit_price": 0,
+        "selling_price": 0,
         "supplier": "",
         "status": false,
+        "reorder_level": 0
     }])
     const [all_suppliers, setAll_suppliers] = useState([{
             "id": -1,
@@ -45,6 +47,7 @@ export const Inventory = () => {
         }])
     const [sortCategory, setSortCategory] = useState("")
     const [sortSupplier, setSortSupplier] = useState("")
+    const [lowStockOnly, setLowStockOnly] = useState(false)
     const [search, setSearch] = useState("")
     const [isActive, setIsActive] = useState(false)
     const [modalHeading, setModalHeading] = useState("")
@@ -259,6 +262,8 @@ export const Inventory = () => {
         fetchCategories();
     }, [company_reg_no, user_id])
 
+    const toggleLowStock = () => setLowStockOnly(prev => !prev)
+
     // Filter products using useMemo to avoid recalculating on every render
     const filteredProducts = useMemo(() => {
         return all_products.filter(prod => {
@@ -271,10 +276,12 @@ export const Inventory = () => {
             
             // Supplier filter
             const matchesSupplier = sortSupplier === "" || sortSupplier === prod.supplier
+
+            const matchesStock = !lowStockOnly || prod.quantity <= prod.reorder_level
             
-            return matchesSearch && matchesCategory && matchesSupplier
+            return matchesSearch && matchesCategory && matchesSupplier && matchesStock
         })
-    }, [all_products, search, sortCategory, sortSupplier])
+    }, [all_products, search, sortCategory, sortSupplier, lowStockOnly])
 
     const closeDialog = () => {
         setIsDialogActive(false)
@@ -320,6 +327,7 @@ export const Inventory = () => {
                 <div className="lower-bar">
                 <Button onclick={addCategory}>Add Category</Button>
                 <Button onclick={addSupplier}>Add Supplier</Button>
+                <Button className={lowStockOnly ? "red": ""} onclick={toggleLowStock}>Low Stock</Button>
                 </div>
             </section>
             <section className="product-grid">
@@ -330,7 +338,8 @@ export const Inventory = () => {
                             <th>Name</th>
                             <th>Category</th>
                             <th>Quantity</th>
-                            <th>Price</th>
+                            <th>Unit Price</th>
+                            <th>Selling Price</th>
                             <th>Supplier</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -344,6 +353,7 @@ export const Inventory = () => {
                                 <td>{prod.category}</td>
                                 <td className="center">{prod.quantity}</td>
                                 <td className="center">{prod.unit_price}</td>
+                                <td className="center">{prod.selling_price}</td>
                                 <td>{prod.supplier}</td>
                                 <td>{prod.status ? "In Stock" : "Low stock"}</td>
                                 <td className="center">

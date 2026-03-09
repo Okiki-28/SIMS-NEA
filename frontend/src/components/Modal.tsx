@@ -30,6 +30,7 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         "quantity": data['quantity'],
         "reorder_level": data['reorder_level'],
         "price": data['price'],
+        "selling_price": data['selling_price'],
         "supplier": data['supplier'],
         "category": data['category'],
         "category_id": data['category_id'],
@@ -47,6 +48,7 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         quantity: data?.quantity ?? 0,
         reorder_level: data?.reorder_level ?? 0,
         price: data?.price ?? 0,
+        selling_price: data?.selling_price ?? 0,
         supplier: data?.supplier ?? "",   // handles id or name
         category: data?.category ?? "",   // handles id or name
         category_id: data?.category_id ?? "",
@@ -133,6 +135,7 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
             "quantity": 0,
             "reorder_level": 0,
             "price": 0,
+            "selling_price": 0,
             "supplier": "",
             "category": "",
             "company_reg_no": company_reg_no,
@@ -232,6 +235,10 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
                         <div>
                             <label htmlFor="price">Price :</label>
                             <input type="number" name="price" id="price" value={addProductFormData.price} onChange={handleProductChange} />
+                        </div>
+                        <div>
+                            <label htmlFor="selling_price">Selling Price :</label>
+                            <input type="number" name="selling_price" id="selling_price" value={addProductFormData.selling_price} onChange={handleProductChange} />
                         </div>
                         <div>
                             <label htmlFor="reorder_level">Reorder Level :</label>

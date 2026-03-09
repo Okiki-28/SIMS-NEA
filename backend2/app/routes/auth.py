@@ -41,10 +41,10 @@ def register_new():
     user_confirm_password = data.get("user_confirm_password")
 
     security_question = data.get("security_question")
-    security_response_hex = data.get("security_response")
+    security_response = data.get("security_response")
 
     
-    if not all([company_name, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response_hex]):
+    if not all([company_name, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response]):
         return fail(details="Complete all required fields in form")
     elif not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
@@ -67,6 +67,10 @@ def register_new():
     salt = os.urandom(16)
     salt_hex = salt.hex()
     password_hash = hash_password(user_password, salt)
+
+    security_salt = os.urandom(16)
+    security_salt_hex = security_salt.hex()
+    security_response_hex = hash_security_response(security_response, security_salt)
     
 
     user = User(
@@ -79,7 +83,8 @@ def register_new():
         role = UserRole.Admin.value,
         company_reg_no = company.reg_no,
         security_question = security_question,
-        security_response_hex = security_response_hex
+        security_response_hex = security_response_hex,
+        security_response_salt_hex = security_salt_hex
     )
 
     db.session.add(user)
@@ -135,9 +140,9 @@ def register_existing():
     user_confirm_password = data.get("user_confirm_password")
 
     security_question = data.get("security_question")
-    security_response_hex = data.get("security_response")
+    security_response = data.get("security_response")
 
-    if not all([company_reg_no, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response_hex]):
+    if not all([company_reg_no, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response]):
         return fail(details="Complete all required fields in form")
     if not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
@@ -149,6 +154,10 @@ def register_existing():
     salt = os.urandom(16)
     salt_hex = salt.hex()
     password_hash = hash_password(user_password, salt)
+
+    security_salt = os.urandom(16)
+    security_salt_hex = security_salt.hex()
+    security_response_hex = hash_security_response(security_response, security_salt)
     
     user = User(
         first_name = user_first_name,
@@ -160,7 +169,8 @@ def register_existing():
         role = user_role.lower(),
         company_reg_no = company_reg_no,
         security_question = security_question,
-        security_response_hex = security_response_hex
+        security_response_hex = security_response_hex,
+        security_response_salt_hex = security_salt_hex
     )
 
     company.size += (company.size or 0) + 1
@@ -263,14 +273,14 @@ def change_password():
         user_id=user.id
     )
 
-    return ok()
+    return {"status": True}
 
 @auth_bp.route("/recover/security", methods=["POST"])
 def confirm_identity():
     payload = request.get_json()
 
     email = payload.get("email")
-    security_response = payload.get("security-response")
+    security_response = payload.get("security_response")
 
     user = User.query.filter_by(email=email).first()
     if not user:
@@ -279,10 +289,10 @@ def confirm_identity():
     salt = bytes.fromhex(user.security_response_salt_hex)
     calculated_hash = hash_security_response(security_response, salt)
 
-    if not hmac.compare_digest(calculated_hash, user.security_response):
+    if not hmac.compare_digest(calculated_hash, user.security_response_hex):
         return fail(details="Invalid email or password")
     else:
-        return ok()
+        return {"status": True}
     
 
 @auth_bp.route("/recover/question", methods=["POST"])
@@ -297,7 +307,8 @@ def get_Security_question():
     security_question = user.security_question
 
     data = {
-        "security_question": security_question
+        "security_question": security_question,
+        "status": True
     }
 
     return data

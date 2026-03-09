@@ -20,7 +20,7 @@ interface Product {
   name: string;
   category: string;
   quantity: number;
-  unit_price: string; // 👈 important (money-safe)
+  selling_price: string; // 👈 important (money-safe)
   supplier: string;
   status: boolean;
   reorder_level: number;
@@ -189,6 +189,7 @@ export const CounterSale = () => {
             return matchesSearch
         })
     }, [all_products, search])
+    console.log(filteredProducts)
 
     const payAndExit = () => {
         if (!Object.keys(cart).length) {
@@ -247,7 +248,7 @@ export const CounterSale = () => {
                                 <td className="center">{index+1}</td>
                                 <td>{prod.name}</td>
                                 <td>{prod.category}</td>
-                                <td className="center">{prod.unit_price}</td>
+                                <td className="center">{prod.selling_price}</td>
                                 <td className="center">{cart[prod.id] && cart[prod.id].quantity}</td>
                                 <td className="center">
                                     <Button stopPropagation={true} onclick={() => removeOneFromCart(prod.id)}>-1</Button>
@@ -276,11 +277,11 @@ export const CounterSale = () => {
                                 <td className="center">{index+1}</td>
                                 <td>{prod.name}</td>
                                 <td>{prod.category}</td>
-                                <td className="center">{prod.unit_price}</td>
+                                <td className="center">{prod.selling_price}</td>
                                 <td>{prod.quantity > prod.reorder_level ? "In Stock" : "Low stock"}</td>
                                 <td className="center">
-                                    {cart[prod.id] && cart[prod.id].quantity >= prod.quantity? "Low Stock":
-                                    <Button stopPropagation={true} onclick={() => addToCart(prod.id, String(prod.unit_price))}>Add</Button>}
+                                    {prod.quantity === 0 || (cart[prod.id]?.quantity ?? 0) >= prod.quantity ? "Out of Stock":
+                                    <Button stopPropagation={true} onclick={() => addToCart(prod.id, String(prod.selling_price))}>Add</Button>}
                                 </td>
                             </tr>
                         ))}

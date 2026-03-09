@@ -16,6 +16,7 @@ import { Reports } from './pages/Reports';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { CounterSale } from './pages/CounterSale';
+import { ForgotPassword } from './pages/ForgotPassword';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path='/register-new' element={<RegisterNew />}/>
             <Route path='/register-existing' element={<RegisterExisting />}/>
             <Route path='/login' element={<Login />}/> 
+            <Route path='forgotpassword' element={<ForgotPassword />}/> 
             <Route path='/logout' element={<Logout />}/> 
             <Route path='*' element={<h1>Page not found !!</h1>}/>
           </Routes>

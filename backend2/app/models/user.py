@@ -69,8 +69,7 @@ class User(db.Model):
     )
     security_response_salt_hex = db.Column(
         db.String(255),
-        nullable = False,
-        default = generate_salt_hex
+        nullable = False
     )
 
     company = db.relationship("Company", foreign_keys=[company_reg_no], backref="users")

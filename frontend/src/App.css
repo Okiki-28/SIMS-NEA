@@ -34,6 +34,16 @@ a {
     color: inherit;
 }
 
+input:disabled {
+    background-color: #fff;
+}
+
+pre {
+    background-color: black;
+    color: ivory;
+    width: 100%;
+}
+
 .solid {
     font-size: 18px;
     padding: 10px;
@@ -45,6 +55,10 @@ a {
     cursor: pointer;
     color: #fbfaf8;
     outline: none;
+}
+
+.solid.red {
+    background-color: red;
 }
 
 .solid:hover {
@@ -236,8 +250,8 @@ section.standalone .registration-choice {
     margin-top: 30px;
 }
 
-section.standalone a.reg-login {
-    margin: 10px;
+section.standalone a {
+    margin: 5px;
 }
 
 section.standalone form {
@@ -489,6 +503,23 @@ main .product-grid {
     box-shadow: 0px 1px 3px 1px #000;
     border-radius: 10px;
     overflow: hidden;
+}
+
+main.reports .product-grid {
+    margin: 25px;
+}
+
+main.reports .text-info {
+    width: 100%;
+    padding: 20px;
+    line-height: 2.5;
+
+}
+
+main .product-grid h2 {
+    color: #fbfaf8;
+    margin: 5px;
+    font-weight: normal;
 }
 
 main .product-grid .solid {

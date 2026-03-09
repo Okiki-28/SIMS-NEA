@@ -23,6 +23,10 @@ class Product(db.Model):
         db.Integer,
         nullable=False
     )
+    selling_price = db.Column(
+        db.Integer,
+        nullable=False
+    )
     reorder_level = db.Column(
         db.Integer,
         nullable=False

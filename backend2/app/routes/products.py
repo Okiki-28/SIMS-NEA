@@ -31,15 +31,16 @@ def get_all_products():
     products = Product.query.filter(Product.company_reg_no == company_reg_no)
 
     data = [{
-        "id": prod.id,
-        "name": prod.name,
-        "category": prod.category.name,
-        "quantity": prod.quantity,
-        "unit_price": prod.unit_price,
-        "supplier": prod.supplier.name,
-        "status": checkProductStatus(prod.quantity, prod.reorder_level),
-        "reorder_level": prod.reorder_level
-    } for prod in products]
+        "id": product.id,
+        "name": product.name,
+        "category": product.category.name,
+        "quantity": product.quantity,
+        "unit_price": product.unit_price,
+        "selling_price": product.selling_price,
+        "supplier": product.supplier.name,
+        "status": checkProductStatus(product.quantity, product.reorder_level),
+        "reorder_level": product.reorder_level
+    } for product in products]
 
     return data
 
@@ -61,6 +62,7 @@ def get_product():
         "description": product.description,
         "quantity": product.quantity,
         "price": product.unit_price,
+        "selling_price": product.selling_price,
         "reorder_level": product.reorder_level,
         "category": product.category.name,
         "category_id": product.category.id,
@@ -88,6 +90,7 @@ def get_some_products():
         "description": product.description,
         "quantity": product.quantity,
         "unit_price": product.unit_price,
+        "selling_price": product.selling_price,
         "reorder_level": product.reorder_level,
         "category": product.category.name,
         "category_id": product.category.id,
@@ -111,6 +114,7 @@ def add_product():
     product_description = payload.get("description") or ""
     product_quantity = payload.get("quantity") or 0
     product_price = payload.get("price")
+    product_selling_price = payload.get("selling_price")
     product_reorder_level = payload.get("reorder_level")
     product_supplier_id = payload.get("supplier_id")
     product_category_id = payload.get("category_id")
@@ -122,6 +126,7 @@ def add_product():
         description = product_description,
         quantity = product_quantity,
         unit_price = product_price,
+        selling_price = product_selling_price,
         reorder_level = product_reorder_level,
         category_id = product_category_id,
         supplier_id = product_supplier_id,
@@ -187,6 +192,7 @@ def edit_product():
         "product_description": product.description,
         "product_quantity": product.quantity,
         "product_unit_price": product.unit_price,
+        "product_selling_price": product.selling_price,
         "product_reorder_level": product.reorder_level,
         "product_supplier_id": product.supplier_id,
         "product_category_id": product.category_id,
@@ -196,6 +202,7 @@ def edit_product():
     product.description = payload.get("description", product.description)
     product.quantity = payload.get("quantity", product.quantity)
     product.unit_price = payload.get("price", product.unit_price)
+    product.selling_price = payload.get("selling_price", product.selling_price)
     product.reorder_level = payload.get("reorder_level", product.reorder_level)
     product.supplier_id = payload.get("supplier_id", product.supplier_id)
     product.category_id = payload.get("category_id", product.category_id)
@@ -207,12 +214,23 @@ def edit_product():
         "product_description": product.description,
         "product_quantity": product.quantity,
         "product_unit_price": product.unit_price,
+        "product_selling_price": product.selling_price,
         "product_reorder_level": product.reorder_level,
         "product_supplier_id": product.supplier_id,
         "product_category_id": product.category_id,
     }
 
-    add_log (
+    if old_data["product_quantity"] < new_data["product_quantity"]:
+        add_log (
+        action="UPDATE + RESTOCK",
+        message=f"Updated product with id {product_id} to company database",
+        company_reg_no=company_reg_no,
+        user_id=user_id,
+        old_data=old_data,
+        new_data=new_data
+    )
+    else:
+        add_log (
         action="UPDATE",
         message=f"Updated product with id {product_id} to company database",
         company_reg_no=company_reg_no,

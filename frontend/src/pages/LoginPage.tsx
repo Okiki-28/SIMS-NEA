@@ -105,6 +105,7 @@ export const Login = () => {
                         required
                         disabled={isLoading}
                     />
+                    <Link to="/forgotPassword">Forgot Password ?</Link>
 
                     <Button type={ButtonType.submit}>
                         {isLoading ? "Logging in..." : "Submit"}

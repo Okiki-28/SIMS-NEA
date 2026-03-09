@@ -39,6 +39,7 @@ export const Navbar = () => {
             "description": "",
             "quantity": 0,
             "price": 0,
+            "selling_price": 0,
             "reorder_level": 0,
             "supplier": -1,
             "category": -1

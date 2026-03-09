@@ -16,7 +16,7 @@ from sqlalchemy import func, case
 
 from decimal import Decimal
 
-log_bp = Blueprint("log", __name__, url_prefix="/logs")
+log_bp = Blueprint("log", __name__, url_prefix="/api/logs")
 
 def convert_decimals(obj):
     if isinstance(obj, dict):
@@ -67,3 +67,31 @@ def clear_all_logs():
     db.session.commit()
 
     return ok()
+
+@log_bp.route("/get", methods=["POST"])
+def get_company_logs():
+    payload = request.get_json()
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+
+    logs = Log.query.filter_by(company_reg_no = company_reg_no).all()
+    
+    data = [
+        {
+            "company_reg_no": l.company_reg_no,
+            "timestamp": l.time,
+            "user": l.user.first_name + " " + l.user.last_name,
+            "user_id": l.user_id,
+            "action": l.action,
+            "message": l.message,
+            "info": l.info or None
+        } for l in logs ]
+    
+    add_log (
+        action="VIEW",
+        message=f"Admin user viewed company logs",
+        company_reg_no=company_reg_no,
+        user_id=user_id
+    )
+
+    return jsonify(data)

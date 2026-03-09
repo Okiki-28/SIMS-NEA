@@ -45,7 +45,7 @@ def add_new_sale():
 
     sale_data = [{
         "user_id": user_id,
-        "data": datetime.now()
+        "data": datetime.now().isoformat()
     }]
     for i in items:
         item = items[i]
@@ -58,6 +58,8 @@ def add_new_sale():
 
         if not product:
             return fail(details="Product does not exist")
+        if quantity < 0:
+            return fail(details="This exceeds product quantity in inventory")
 
         sale_item = Sale_item(
             sale_id = sale_id,
@@ -82,7 +84,7 @@ def add_new_sale():
 
     add_log (
         action="ADD",
-        message="Added new supplier to company database",
+        message="Sale performed by user",
         company_reg_no=company_reg_no,
         user_id=user_id,
         info = sale_data

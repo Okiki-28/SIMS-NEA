@@ -26,6 +26,8 @@ def get_all_users():
             "role": u.role,
             "created at": u.created_at,
             "security question": u.security_question,
+            "security_response_hex": u.security_response_hex,
+            "security_response_salt_hex": u.security_response_salt_hex,
             "company reg no": u.company_reg_no,
             "user_password": u.password_hash,
             "salt": u.salt_hex
@@ -169,6 +171,22 @@ def edit_user():
 
     return ok()
 
+@user_bp.route("/isAdmin", methods=["POST"])
+def is_user_admin():
+    payload = request.get_json() or {}
+
+    company_reg_no = payload.get("company_reg_no")
+    user_id = payload.get("user_id")
+
+    if not validate_user(company_reg_no=company_reg_no, user_id=user_id):
+        return fail(details="Invalid request from unknown user")
+
+    user = User.query.filter_by(id=user_id, company_reg_no=company_reg_no).first()
+
+    if not user:
+        return fail()
+    else:
+        return {"status": user.role == "admin"}
 @user_bp.route("/all", methods=["POST"])
 def get_all_staff():
     payload = request.get_json() or {}

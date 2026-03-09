@@ -28,17 +28,14 @@ class Sale(db.Model):
     user = db.relationship("User", foreign_keys=[user_id], backref="sales")
     company = db.relationship("Company", foreign_keys=[company_reg_no], backref="sales")
 
-    # Computed properties
-    @property
-    def no_of_items(self):
-        """Total quantity of all items in this sale"""
-        return sum(item.quantity for item in self.sale_items if item.status)
-    
-    @property
-    def total_amount(self):
-        """Total sale amount"""
-        return sum(
-            item.quantity * item.sale_price 
-            for item in self.sale_items 
-            if item.status
-        )
+    def total_revenue(self):
+        """Total revenue from all items in this sale"""
+        return float(sum(item.sale_price * item.quantity for item in self.items if item.status))
+
+    def total_profit(self):
+        """Total profit from all items in this sale"""
+        return float(sum(item.profit() for item in self.items if item.status))
+
+    def total_cost(self):
+        """Total cost of goods sold in this sale"""
+        return float(self.total_revenue() - self.total_profit())
