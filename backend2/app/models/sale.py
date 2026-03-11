@@ -11,7 +11,7 @@ class Sale(db.Model):
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("user.id"),
-        nullable=False  # Should a sale always have a user?
+        nullable=False 
     )
     company_reg_no = db.Column(
         db.String(10),
@@ -29,13 +29,13 @@ class Sale(db.Model):
     company = db.relationship("Company", foreign_keys=[company_reg_no], backref="sales")
 
     def total_revenue(self):
-        """Total revenue from all items in this sale"""
+        # Total revenue from all items in this sale
         return float(sum(item.sale_price * item.quantity for item in self.items if item.status))
 
     def total_profit(self):
-        """Total profit from all items in this sale"""
+        # Total profit from all items in this sale
         return float(sum(item.profit() for item in self.items if item.status))
 
     def total_cost(self):
-        """Total cost of goods sold in this sale"""
+        # Total cost of goods sold in this sale
         return float(self.total_revenue() - self.total_profit())

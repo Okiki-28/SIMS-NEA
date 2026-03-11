@@ -31,6 +31,7 @@ function App() {
             <Route path='/counter-sale' element={<MainLayout><CounterSale /></MainLayout>}/>
             <Route path='/settings' element={<MainLayout><Settings /></MainLayout>}/>
             <Route path='/reports' element={<MainLayout><Reports /></MainLayout>}/>
+            <Route path='/check' element={<MainLayout><h1>This is the Mainlayout page</h1></MainLayout>}/>
 
             {/* Does not Run through the main layout format */}
             <Route path='/register' element={<Register />}/>

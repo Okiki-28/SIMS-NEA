@@ -184,11 +184,15 @@ export const Reports = () => {
         
     }, [user_id, company_reg_no, setChartData, setChartData1])
     const displayCompanyLogs = () => {
+        if (isUserAdmin == false) {
+                return false
+            }
         if (showLogs) {
             setShowLogs(false)
             return
         }
         const getCompanyLogs = async () => {
+            
             try {
                 const response = await api.post("/api/logs/get", payload)
                 const data = response.data

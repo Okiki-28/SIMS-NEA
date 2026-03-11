@@ -1,6 +1,5 @@
 from app import db
 from app.utils.hash_password import hash_password
-from app.models.enum import UserRole, SecurityQuestion
 
 import os
 

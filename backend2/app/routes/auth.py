@@ -3,7 +3,6 @@ from app import db
 from flask import Blueprint, jsonify, request, session
 from app.models.user import User
 from app.models.company import Company
-from app.models.enum import UserRole
 
 from app.utils.hash_password import hash_password
 from app.utils.hash_security_response import hash_security_response
@@ -48,6 +47,8 @@ def register_new():
         return fail(details="Complete all required fields in form")
     elif not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
+    elif len(user_password < 8):
+        return fail(details="password too short")
     #Add okay and fail helper function
 
 
@@ -80,7 +81,7 @@ def register_new():
         tel = user_tel,
         password_hash = password_hash,
         salt_hex = salt_hex,
-        role = UserRole.Admin.value,
+        role = "Admin",
         company_reg_no = company.reg_no,
         security_question = security_question,
         security_response_hex = security_response_hex,
@@ -138,14 +139,15 @@ def register_existing():
     user_role = data.get("user_role")
     user_password = data.get("user_password")
     user_confirm_password = data.get("user_confirm_password")
-
     security_question = data.get("security_question")
     security_response = data.get("security_response")
 
     if not all([company_reg_no, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response]):
         return fail(details="Complete all required fields in form")
-    if not user_password == user_confirm_password:
+    elif not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
+    elif len(user_password < 8):
+        return fail(details="password too short")
     
     company = Company.query.filter_by(reg_no = company_reg_no).first()
     if not company:
