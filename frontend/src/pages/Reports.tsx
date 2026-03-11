@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { setHeading } from "../store/store";
 import { Button } from "../components/Button";
 
@@ -9,7 +8,7 @@ import { BarChartComponent } from "../components/BarChart";
 import { PieChartComponent } from "../components/PieChart";
 import api from "../api/client";
 
-import { PieChart, Pie, Tooltip, Legend, Bar, ResponsiveContainer } from "recharts"
+import { PieChart, Pie, Tooltip, Legend, ResponsiveContainer } from "recharts"
 
 
 type pieChartData = {
@@ -63,7 +62,6 @@ interface saleProfitInterface {
 export const Reports = () => {
 
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     useEffect(() => {
         dispatch(setHeading({
             heading: "Reports",
@@ -89,12 +87,14 @@ export const Reports = () => {
     const [stockValue, setStockValue] = useState<stockValueInterface>()
     const [saleProfit, setSaleProfit] = useState<saleProfitInterface>()
 
-    const payload = {
-        "company_reg_no": company_reg_no,
-        "user_id": user_id
-    }
+
+    
     
     useEffect(()=>{
+        const payload = {
+            "company_reg_no": company_reg_no,
+            "user_id": user_id
+        }
         
         const fetchCategoriesInfo = async () => {
             try {
@@ -184,12 +184,16 @@ export const Reports = () => {
         
     }, [user_id, company_reg_no, setChartData, setChartData1])
     const displayCompanyLogs = () => {
-        if (isUserAdmin == false) {
+        if (isUserAdmin === false) {
                 return false
             }
         if (showLogs) {
             setShowLogs(false)
             return
+        }
+        const payload = {
+            "company_reg_no": company_reg_no,
+            "user_id": user_id
         }
         const getCompanyLogs = async () => {
             
