@@ -27,6 +27,5 @@ class Supplier(db.Model):
         db.ForeignKey("company.reg_no", ondelete="CASCADE"),
         nullable=False
     )
-
-    # Fix: Use capitalized class names, not table names
+    
     company = db.relationship("Company", foreign_keys=[company_reg_no], backref="suppliers")

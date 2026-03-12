@@ -42,16 +42,23 @@ export const RegisterNew = () => {
         }));
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("")
         setIsLoading(true)
         try {
-            api.post("/api/auth/register-new", formData)
+            const response = await api.post("/api/auth/register-new", formData)
+            const data = response.data
+            
             navigate("/login")
         } catch(err:any) {
             console.log("Login error:", err?.response?.status);
             console.log("Error details:", err?.response?.data);
+
+            if (err?.response) {
+                setError(err.response.data.details)
+            }
+            setIsLoading(false)
         }
     }
 
@@ -61,13 +68,15 @@ export const RegisterNew = () => {
                 <div className="greeting">
                     <h1>Register</h1>
                     <p>Register with <em>New</em> company</p>
+                    <br />
+                    <i>Inputs having *  are required fields</i>
                 </div>
                 <form onSubmit={handleSubmit}>
                     {error && <div className="error-message">{error}</div>}
                     <fieldset>
                         <legend>Company Details</legend>
                         <div>
-                            <label htmlFor="company_name">Company Name: </label>
+                            <label htmlFor="company_name">* Company Name: </label>
                             <input type="text" id="company_name" name="company_name" onChange={handleChange} />
                         </div>
                         <div>
@@ -87,19 +96,19 @@ export const RegisterNew = () => {
                     <fieldset>
                         <legend>User Details</legend>
                         <div>
-                            <label htmlFor="user_first_name">First Name: </label>
+                            <label htmlFor="user_first_name">* First Name: </label>
                             <input type="text" id="user_first_name" name="user_first_name" onChange={handleChange} placeholder="John"/>
                         </div>
                         <div>
-                            <label htmlFor="user_last_name">Last Name: </label>
+                            <label htmlFor="user_last_name">* Last Name: </label>
                             <input type="text" id="user_last_name" name="user_last_name" onChange={handleChange} placeholder="Doe"/>
                         </div>
                         <div>
-                            <label htmlFor="user_role">Role: </label>
+                            <label htmlFor="user_role">* Role: </label>
                             <input type="text" id="user_role" name="user_role" onChange={handleChange} value="Admin" readOnly />
                         </div>
                         <div>
-                            <label htmlFor="user_email">Email Address: </label>
+                            <label htmlFor="user_email">* Email Address: </label>
                             <input type="email" id="user_email" name="user_email" onChange={handleChange} placeholder="johndoe@company.com"/>
                         </div>
                         <div>
@@ -107,26 +116,26 @@ export const RegisterNew = () => {
                             <input type="tel" id="user_tel" name="user_tel" onChange={handleChange} />
                         </div>
                         <div>
-                            <label htmlFor="user_password">Password: </label>
+                            <label htmlFor="user_password">* Password: </label>
                             <input type="password" id="user_password" name="user_password" onChange={handleChange} />
                         </div>
                         <div>
-                            <label htmlFor="user_confirm_password">Confirm Password: </label>
+                            <label htmlFor="user_confirm_password">* Confirm Password: </label>
                             <input type="password" id="user_confirm_password" name="user_confirm_password" onChange={handleChange} />
                         </div>
                     </fieldset>
                     <fieldset>
                         <legend>Security Question</legend>
                         <div>
-                            <label htmlFor="security_question">Question: </label>
+                            <label htmlFor="security_question">* Question: </label>
                             <select id="security_question" name="security_question" onChange={handleChange}>
-                                <option value="" disabled>--Choose a security question--</option>
+                                <option>--Choose a security question--</option>
                                 <option value="mother_maiden">What is the your mother's maiden name?</option>
                                 <option value="first_pet">What is the name of your first pet?</option>
                                 <option value="first_school">What is the name of your first school?</option>
                             </select>
                             <div>
-                                <label htmlFor="security_response">Answer: </label>
+                                <label htmlFor="security_response">* Answer: </label>
                                 <input type="text" id="security_response" name="security_response" onChange={handleChange} />
                             </div>
                         </div>

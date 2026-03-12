@@ -31,7 +31,7 @@ class Sale_item(db.Model):
     )
 
     def profit(self):
-        """Profit from a single sale item: (sale_price - unit_price) * quantity"""
+        # Profit from a single sale item: (sale_price - unit_price) * quantity
         product = Product.query.get(self.product_id)
         if not product:
             return 0

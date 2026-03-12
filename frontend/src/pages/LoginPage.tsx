@@ -63,8 +63,8 @@ export const Login = () => {
             // Set user-friendly error message
             if (err?.response?.status === 401) {
                 setError("Invalid email or password")
-            } else if (err?.response?.data?.message) {
-                setError(err.response.data.message)
+            } else if (err?.response?.data) {
+                setError(err.response.details)
             } else {
                 setError("Login failed. Please try again.")
             }

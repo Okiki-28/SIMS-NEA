@@ -19,6 +19,9 @@ export const RegisterExisting = () => {
         user_confirm_password: ""
     })
 
+    const [error, setError] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+
     const handleChange = (e: any) => {
         const { name, value } = e.target
 
@@ -37,7 +40,13 @@ export const RegisterExisting = () => {
             console.log("OK:", data);
             navigate("/login")
         } catch (err: any) {
-            console.log("Status:", err?.response?.status);
+            console.log("Login error:", err?.response?.status);
+            console.log("Error details:", err?.response?.data);
+
+            if (err?.response) {
+                setError(err.response.data.details)
+            }
+            setIsLoading(false)
         }
     };
 
@@ -47,6 +56,8 @@ export const RegisterExisting = () => {
                 <div className="greeting">
                     <h1>Register</h1>
                     <p>Register with <em>Existing</em> Company</p>
+
+                    {error && <div className="error-message">{error}</div>}
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div>
@@ -66,7 +77,7 @@ export const RegisterExisting = () => {
                         <label htmlFor="user_role">Role: </label>
                         <select name="user_role" id="user_role" onChange={handleChange}>
                             <option value="">--Select Role--</option>
-                            <option value="admin">Admin</option>
+                            <option value="Admin">Admin</option>
                             <option value="staff">Staff</option>
                         </select>
                     </div>
@@ -99,7 +110,9 @@ export const RegisterExisting = () => {
                             <input type="text" id="security_response" name="security_response" onChange={handleChange} />
                         </div>
                     </div>
-                    <Button type={ButtonType.submit}>Submit</Button>
+                    <Button type={ButtonType.submit}>
+                        {isLoading ? "Registering..." : "Submit"}
+                    </Button>
                 </form>
             </section>
         </main>

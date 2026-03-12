@@ -186,7 +186,7 @@ def is_user_admin():
     if not user:
         return fail()
     else:
-        return {"status": user.role == "admin"}
+        return {"status": user.role == "Admin"}
 @user_bp.route("/all", methods=["POST"])
 def get_all_staff():
     payload = request.get_json() or {}
@@ -202,7 +202,7 @@ def get_all_staff():
     if not user:
         return fail()
     
-    if not user.role == "admin":
+    if not user.role == "Admin":
         return ok(data="Invalid request from this user")
 
     all_staff = User.query.filter_by(company_reg_no=company_reg_no).all()

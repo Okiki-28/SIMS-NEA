@@ -123,10 +123,14 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
     fetchCategories();
     }, [company_reg_no])
 
-    const handleProductSummit = (e: React.FormEvent) => {
-        // e.preventDefault()
+    const handleProductSummit = async (e: React.FormEvent) => {
+        e.preventDefault()
         console.log(addProductFormData)
-        handleSubmit(e, addProductFormData)
+        const response = await handleSubmit(e, addProductFormData)
+        if (response?.error) {
+            setError(response.error)
+            return
+        } 
         setAddProductFormData({
             "user_id": user_id,
             "id": 0,
@@ -160,9 +164,12 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
     
     const handleSupplierSubmit = (e: React.FormEvent) => {
         // e.preventDefault()
-        
         console.log(addSupplierFormData)
-        handleSubmit(e, addSupplierFormData)
+        data = handleSubmit(e, addSupplierFormData)
+        if (data?.error) {
+            setError(data.error)
+        }
+
         setAddSupplierFormData({
             "name": "",
             "email": "",
@@ -215,6 +222,7 @@ export const Modal = ({heading="Modal", purpose="product", data, isActive, onClo
         <div className={isActive? "modal active": "modal"}>
             <div className="box">
                 <h1>{heading} Product</h1>
+                {error && <div className="error-message">{error}</div>}
                 <Button onclick={onClose} className="cancel">X</Button>
                 {purpose == "product" &&
                 <form onSubmit={handleProductSummit}>

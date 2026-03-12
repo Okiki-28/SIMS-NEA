@@ -91,7 +91,7 @@ export const Settings = () => {
             }
         }
 
-        role === "admin" && fetchStaffInfo()
+        role === "Admin" && fetchStaffInfo()
         
         fetchDetails();
     }, [user_id, company_reg_no]);
@@ -139,7 +139,7 @@ export const Settings = () => {
                         <label htmlFor="user_role">Role: </label>
                         <select name="user_role" id="user_role" onChange={handleChange} value={userDetails.user_role} disabled={isDisabled}>
                             <option value="">--Select Role--</option>
-                            <option value="admin">Admin</option>
+                            <option value="Admin">Admin</option>
                             <option value="staff">Staff</option>
                         </select>
                     </div>
@@ -158,7 +158,7 @@ export const Settings = () => {
                     </div>}
                 </form>
             </div>
-            {role === "admin" && (
+            {role === "Admin" && (
             <><div className="company-info">
                 <div className="header">
                     <h1>Company Information</h1>
@@ -207,7 +207,7 @@ export const Settings = () => {
                         </select>
                     </div>
                 </form></>)}
-                {role === "admin" && <>
+                {role === "Admin" && <>
                 <div className="user-info">
                     <h1>Other Staff</h1>
                 </div>

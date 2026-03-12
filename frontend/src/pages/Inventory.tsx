@@ -298,7 +298,7 @@ export const Inventory = () => {
                     <div className="search">
                         <input 
                             type="text" 
-                            placeholder="Search products by name or description"
+                            placeholder="Search products by name"
                             value={search}
                             onChange={handleSearchChange}
                             />

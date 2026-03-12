@@ -313,6 +313,11 @@ section.standalone.register form button {
     padding: 10px 30px;
 }
 
+.error-message {
+    color: red;
+    margin-bottom: 5px;
+}
+
 /* ----------Dashboard */
 main.main-layout {
     position: relative;

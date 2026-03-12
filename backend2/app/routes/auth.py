@@ -47,8 +47,11 @@ def register_new():
         return fail(details="Complete all required fields in form")
     elif not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
-    elif len(user_password < 8):
-        return fail(details="password too short")
+    elif len(user_password) < 8:
+        return fail(details="Password too short")
+    
+    if Company.query.filter_by(name = company_name).first():
+        return fail(details="Company name already exists")
     #Add okay and fail helper function
 
 
@@ -73,6 +76,8 @@ def register_new():
     security_salt_hex = security_salt.hex()
     security_response_hex = hash_security_response(security_response, security_salt)
     
+    if User.query.filter_by(email = user_email).first():
+        return fail(details="Email already exists in database")
 
     user = User(
         first_name = user_first_name,
@@ -142,12 +147,12 @@ def register_existing():
     security_question = data.get("security_question")
     security_response = data.get("security_response")
 
-    if not all([company_reg_no, user_first_name, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response]):
+    if not all([company_reg_no, user_first_name, user_role, user_last_name, user_email, user_password, user_confirm_password, security_question, security_response]):
         return fail(details="Complete all required fields in form")
     elif not user_password == user_confirm_password:
         return fail(details="Passwords don't match")
-    elif len(user_password < 8):
-        return fail(details="password too short")
+    elif len(user_password) < 8:
+        return fail(details="Password too short")
     
     company = Company.query.filter_by(reg_no = company_reg_no).first()
     if not company:

@@ -119,6 +119,10 @@ def add_product():
     product_supplier_id = payload.get("supplier_id")
     product_category_id = payload.get("category_id")
 
+    if not all([product_name, product_price, product_selling_price, product_reorder_level, product_category_id, product_supplier_id]):
+        return fail(details="Fill in all fields")
+    if int(product_quantity) < 0:
+        return fail(details="Quantity cannot be negative")
 
 
     product = Product(
@@ -136,15 +140,36 @@ def add_product():
     
     category = Category.query.filter_by(id=product_category_id, company_reg_no=company_reg_no).first()
     if not category:
-        return fail()
+        return fail(details="Invalid category refrenced")
     
     supplier = Supplier.query.filter_by(id=product_supplier_id, company_reg_no=company_reg_no).first()
     if not supplier:
-        return fail()
+        return fail(details="Invalid supplier referenced")
     category.number_of_items = (category.number_of_items or 0) + 1
 
     db.session.add(product)
     db.session.commit()
+
+    data = {
+        "name": product_name,
+        "description": product_description,
+        "quantity": product_quantity,
+        "unit_price": product_price,
+        "selling_price": product_selling_price,
+        "reorder_level": product_reorder_level,
+        "category_id": product_category_id,
+        "supplier_id": product_supplier_id,
+        "company_reg_no": company_reg_no
+
+    }
+
+    add_log (
+        action="ADD",
+        message=f"Product with name {product_name} was added to company database",
+        company_reg_no=company_reg_no,
+        user_id=user_id,
+        info=data
+    )
 
     return ok(message=f"Product {product_name} has been added")
 

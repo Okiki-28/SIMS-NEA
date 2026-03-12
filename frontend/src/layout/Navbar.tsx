@@ -57,10 +57,15 @@ export const Navbar = () => {
         try {
             console.log(formData)
             const response = await api.post("/api/products/add", formData, { withCredentials: true });
-            const data = response.data
-            console.log(data)
-        } catch {
-            console.log("Error adding product")
+
+            return response.data
+        } catch (err:any) {
+            if (err?.response) {
+                setError(err.response.data.details)
+            } else {
+                setError("Unable to add product")
+            }
+            return {"error": err.response.data.details}
         }
     }
     return (
